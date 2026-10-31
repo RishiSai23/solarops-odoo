@@ -96,6 +96,8 @@
 
 ## Phase 6 — Testing and Deployment
 
+- [x] Fixed `odoo_addons/sunflow_core/tests/test_site_survey.py` setUpClass: replaced invalid Odoo 17 external ID `sale.group_sale_salesperson` with verified `sales_team.group_sale_salesman`; fixed `test_wizard_missing_remarks_rejected` to use `default_survey_id` context and assert `AssertionError` (Odoo Form required-field validation).
+- [x] Runtime verification via Docker Odoo test command: 0 failed, 0 error(s) of 29 tests when loading database `sunflow_demo`.
 - [ ] Documentation validation test suite passed.
 - [ ] Backend route unit and integration tests.
 - [ ] Frontend component and workflow tests.

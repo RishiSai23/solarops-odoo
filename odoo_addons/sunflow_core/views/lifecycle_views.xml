@@ -14,6 +14,9 @@
                             type="object" class="btn btn-secondary"
                             invisible="stage not in ('feasibility', 'quotation') or sale_order_id"/>
                     <field name="stage" widget="statusbar" statusbar_visible="lead,survey,feasibility,quotation,order,installation,commissioning,handover,warranty,closed"/>
+                    <button name="action_create_quotation" type="object" string="Create Quotation"
+                            class="oe_highlight"
+                            invisible="sale_order_id or stage not in ('feasibility','quotation')"/>
                 </header>
                 <sheet>
                     <field name="sale_order_id" invisible="1"/>
@@ -35,6 +38,7 @@
                             <field name="assigned_technician_id"/>
                         </group>
                         <group string="Financials &amp; Timeline">
+                            <field name="sale_order_id" invisible="1"/>
                             <field name="contract_amount"/>
                             <field name="actual_cost"/>
                             <field name="gross_margin"/>

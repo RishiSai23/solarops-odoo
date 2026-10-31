@@ -3,6 +3,8 @@ access_solar_project_user,solar.project.user,model_solar_project,base.group_user
 access_solar_project_manager,solar.project.manager,model_solar_project,base.group_system,1,1,1,1
 access_solar_survey_user,solar.survey.user,model_solar_survey,base.group_user,1,1,1,0
 access_solar_survey_manager,solar.survey.manager,model_solar_survey,base.group_system,1,1,1,1
+access_solar_survey_reject_wizard_user,solar.survey.reject.wizard.user,model_solar_survey_reject_wizard,base.group_user,1,1,1,0
+access_solar_survey_reject_wizard_manager,solar.survey.reject.wizard.manager,model_solar_survey_reject_wizard,base.group_system,1,1,1,1
 access_solar_package_user,solar.package.user,model_solar_package,base.group_user,1,0,0,0
 access_solar_package_manager,solar.package.manager,model_solar_package,base.group_system,1,1,1,1
 access_solar_installation_user,solar.installation.user,model_solar_installation,base.group_user,1,1,1,0

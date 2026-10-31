@@ -5,12 +5,53 @@ from odoo.exceptions import ValidationError
 class SolarSurvey(models.Model):
     _name = 'solar.survey'
     _description = 'Rooftop Site Feasibility Survey'
-    _inherit = ['mail.thread']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name = fields.Char(string='Survey Reference', required=True, copy=False, default='New Survey')
-    project_id = fields.Many2one('solar.project', string='Solar Project', required=True, ondelete='cascade')
-    surveyor_id = fields.Many2one('res.users', string='Surveyor', default=lambda self: self.env.user)
-    survey_date = fields.Date(string='Survey Date', default=fields.Date.context_today)
+    name = fields.Char(
+        string='Survey Reference',
+        required=True,
+        copy=False,
+        default=lambda self: _('New'),
+    )
+    project_id = fields.Many2one(
+        'solar.project',
+        string='Solar Project',
+        required=True,
+        ondelete='cascade',
+        tracking=True,
+    )
+    lead_id = fields.Many2one(
+        'crm.lead',
+        string='CRM Lead',
+        help='Direct link to the source CRM lead. Must remain consistent with the linked project source lead.',
+    )
+    surveyor_id = fields.Many2one(
+        'res.users',
+        string='Surveyor',
+        default=lambda self: self.env.user,
+        tracking=True,
+    )
+    survey_date = fields.Date(
+        string='Survey Date',
+        default=fields.Date.context_today,
+        tracking=True,
+    )
+
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('scheduled', 'Scheduled'),
+        ('in_progress', 'In Progress'),
+        ('submitted', 'Submitted'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ], string='Workflow State', default='draft', tracking=True, copy=False)
+
+    feasibility_status = fields.Selection([
+        ('draft', 'Draft'),
+        ('feasible', 'Feasible & Approved'),
+        ('conditional', 'Conditional / Requires Reinforcement'),
+        ('rejected', 'Not Feasible')
+    ], string='Feasibility Status', default='draft')
 
     roof_type = fields.Selection([
         ('rcc_flat', 'RCC Flat Roof'),
@@ -19,11 +60,27 @@ class SolarSurvey(models.Model):
         ('ground_mount', 'Ground Mount')
     ], string='Rooftop Type', default='rcc_flat')
 
+    roof_direction = fields.Selection([
+        ('north', 'North'),
+        ('south', 'South'),
+        ('east', 'East'),
+        ('west', 'West'),
+        ('north_east', 'North-East'),
+        ('north_west', 'North-West'),
+        ('south_east', 'South-East'),
+        ('south_west', 'South-West'),
+        ('flat', 'Flat / No Direction'),
+    ], string='Roof Direction')
+
     azimuth_degrees = fields.Float(string='Azimuth (°)', help='True South = 180°')
     tilt_degrees = fields.Float(string='Optimal Tilt (°)', default=15.0)
     shading_factor_pct = fields.Float(string='Shading Factor (%)', default=0.0)
 
     usable_area_sqft = fields.Float(string='Usable Rooftop Area (sq.ft)')
+    cable_distance = fields.Float(
+        string='Cable Distance (ft)',
+        help='Distance from the rooftop array to the main distribution panel.',
+    )
     sanctioned_load_kw = fields.Float(string='Sanctioned Grid Load (kW)')
     meter_phase = fields.Selection([
         ('single_phase', 'Single Phase (230V)'),
