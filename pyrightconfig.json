@@ -1,0 +1,14 @@
+{
+  "stubPath": "typings",
+  "include": [
+    "backend",
+    "odoo_addons",
+    "scripts"
+  ],
+  "exclude": [
+    "**/node_modules",
+    "**/__pycache__"
+  ],
+  "reportMissingImports": "warning",
+  "pythonVersion": "3.10"
+}

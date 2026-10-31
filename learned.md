@@ -211,6 +211,7 @@ Odoo's PostgreSQL database houses all models:
 
 - **Discovery 001 (Environment Status)**: Python 3.10 and Node v22.14 are installed on the local system. Docker is installed but Docker Desktop daemon is not currently active.
 - **Architectural Solution**: The backend includes an auto-fallback **Sandbox / Mock Adapter**. When Odoo is reachable, calls route to real Odoo XML-RPC; when offline, the gateway serves consistent sandbox data matching Odoo data structures, enabling frictionless UI testing and development!
+- **Discovery 002 (Odoo Stubs & Frontend Dependencies)**: Since Odoo runtime runs containerized in Docker, the host Python 3.10 environment lacked `odoo` packages, generating IDE import errors. We added comprehensive Odoo interface stubs in `typings/odoo/__init__.pyi` mapped via `pyrightconfig.json` and `.vscode/settings.json`. Frontend packages were installed cleanly, achieving zero compilation errors with `npx tsc --noEmit`.
 
 ---
 
@@ -219,3 +220,4 @@ Odoo's PostgreSQL database houses all models:
 | Date | Author | Description |
 |---|---|---|
 | 2026-10-31 | Antigravity AI | Initialized repository foundation, defined 19-stage lifecycle architecture, created documentation system. |
+| 2026-10-31 | Antigravity AI | Resolved IDE diagnostics: installed frontend node_modules, created Odoo type stubs in typings/, configured pyright and vscode settings. |

@@ -18,8 +18,8 @@
 - [x] `ENGINEERING_PROTOCOL.md` established.
 - [x] Automated documentation validation script (`scripts/validate_docs.py`) created.
 - [x] Directory documentation structure created across all project folders.
-- [ ] Backend development environment initialized and validated.
-- [ ] Frontend development environment initialized and validated.
+- [x] Backend development environment initialized and validated (Python 3.10, FastAPI, Pydantic, Uvicorn verified).
+- [x] Frontend development environment initialized and validated (Node v22.14, npm dependencies installed, TypeScript check passed).
 - [ ] Odoo module foundation structure established.
 
 ---

@@ -218,3 +218,32 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Node.js / Frontend
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.pnpm-store/
+
+# Vite / Frontend build artifacts
+dist/
+dist-ssr/
+*.local
+.vite/
+
+# Editor / IDE
+.idea/
+.vscode/*
+!.vscode/settings.json
+
+# Docker & local database volume mounts
+sunflow_db_data/
+sunflow_odoo_data/
+
+# Odoo local runtime & filestore
+filestore/
+sessions/
+

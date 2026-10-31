@@ -14,6 +14,7 @@ The `frontend/` directory houses the Single-Page Application (SPA) client for Pr
 | File | Responsibility |
 |---|---|
 | `index.html` | Application HTML entrypoint with metadata, solar favicon, and root DOM mount point. |
+| `package-lock.json` | Pinned dependency tree and integrity hashes for npm installations. |
 | `package.json` | Node package manager definition with dependencies (React, Lucide, Tailwind) and dev scripts. |
 | `postcss.config.js` | PostCSS configuration plugin pipeline for Tailwind CSS and Autoprefixer. |
 | `tailwind.config.js` | Tailwind design system configuration with custom solar amber and navy palettes. |
