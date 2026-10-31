@@ -4,7 +4,7 @@
 The `docs/` directory houses detailed architectural specifications, lifecycle flow definitions, integration blueprints, and domain reference material for Project SunFlow. It serves as an in-depth companion to the root-level knowledge base.
 
 ## 2. Subdirectory Documentation
-Currently, `docs/` contains no subdirectories. All architectural and process specifications reside directly in this directory.
+- `technical-mastery/`: Deep-dive reverse engineering guides, Odoo internals theory, execution walkthroughs, and technical defense Q&A for the platform codebase.
 
 ## 3. File Documentation
 

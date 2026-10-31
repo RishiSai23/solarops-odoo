@@ -6,7 +6,7 @@
               sequence="10"
               web_icon="sunflow_core,static/description/icon.png"/>
 
-    <!-- Operational Menus -->
+    <!-- ── Operations ────────────────────────────────────────────────── -->
     <menuitem id="menu_sunflow_operations"
               name="Operations"
               parent="menu_sunflow_root"
@@ -17,4 +17,41 @@
               parent="menu_sunflow_operations"
               action="action_solar_project"
               sequence="10"/>
+
+    <menuitem id="menu_sunflow_surveys"
+              name="Site Surveys"
+              parent="menu_sunflow_operations"
+              action="action_solar_survey"
+              sequence="20"/>
+
+    <!-- ── Inventory ─────────────────────────────────────────────────── -->
+    <menuitem id="menu_sunflow_inventory"
+              name="Inventory"
+              parent="menu_sunflow_root"
+              sequence="20"/>
+
+    <menuitem id="menu_sunflow_packages"
+              name="Solar Packages"
+              parent="menu_sunflow_inventory"
+              action="action_solar_package"
+              sequence="10"/>
+
+    <menuitem id="menu_sunflow_stock_requirements"
+              name="Stock Requirements"
+              parent="menu_sunflow_inventory"
+              action="action_solar_stock_requirement"
+              sequence="20"/>
+
+    <menuitem id="menu_sunflow_shortages"
+              name="Stock Shortages"
+              parent="menu_sunflow_inventory"
+              action="action_solar_stock_shortages"
+              sequence="30"/>
+
+    <menuitem id="menu_sunflow_dispatches"
+              name="Equipment Dispatches"
+              parent="menu_sunflow_inventory"
+              action="action_solar_equipment_dispatch"
+              sequence="40"/>
+
 </odoo>
