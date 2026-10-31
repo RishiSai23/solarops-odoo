@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: sunflow_db
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=odoo
+      - POSTGRES_PASSWORD=odoo_secret_pass
+    volumes:
+      - sunflow_db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  odoo:
+    image: odoo:17.0
+    container_name: sunflow_odoo
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8069:8069"
+    environment:
+      - HOST=db
+      - USER=odoo
+      - PASSWORD=odoo_secret_pass
+    volumes:
+      - sunflow_odoo_data:/var/lib/odoo
+      - ./odoo.conf:/etc/odoo/odoo.conf
+      - ../odoo_addons:/mnt/extra-addons
+    restart: unless-stopped
+
+  gateway:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: sunflow_gateway
+    depends_on:
+      - odoo
+    ports:
+      - "8000:8000"
+    environment:
+      - ODOO_URL=http://odoo:8069
+      - ODOO_DB=sunflow_demo
+      - ODOO_USER=admin
+      - ODOO_PASSWORD=admin
+      - SANDBOX_MODE=false
+    restart: unless-stopped
+
+volumes:
+  sunflow_db_data:
+  sunflow_odoo_data:

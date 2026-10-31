@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Top Level Menu -->
+    <menuitem id="menu_sunflow_root"
+              name="SunFlow Solar"
+              sequence="10"
+              web_icon="sunflow_core,static/description/icon.png"/>
+
+    <!-- Operational Menus -->
+    <menuitem id="menu_sunflow_operations"
+              name="Operations"
+              parent="menu_sunflow_root"
+              sequence="10"/>
+
+    <menuitem id="menu_sunflow_projects"
+              name="Solar Projects"
+              parent="menu_sunflow_operations"
+              action="action_solar_project"
+              sequence="10"/>
+</odoo>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Solar Project Form View -->
+    <record id="view_solar_project_form" model="ir.ui.view">
+        <field name="name">solar.project.form</field>
+        <field name="model">solar.project</field>
+        <field name="arch" type="xml">
+            <form string="Solar Project Lifecycle">
+                <header>
+                    <field name="stage" widget="statusbar" statusbar_visible="lead,survey,feasibility,quotation,order,installation,commissioning,handover,warranty,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Customer &amp; Capacity">
+                            <field name="partner_id"/>
+                            <field name="kw_capacity"/>
+                            <field name="system_type"/>
+                            <field name="assigned_technician_id"/>
+                        </group>
+                        <group string="Financials &amp; Timeline">
+                            <field name="contract_amount"/>
+                            <field name="actual_cost"/>
+                            <field name="gross_margin"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="installation_date"/>
+                            <field name="completion_date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Site Surveys">
+                            <field name="survey_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="survey_date"/>
+                                    <field name="roof_type"/>
+                                    <field name="sanctioned_load_kw"/>
+                                    <field name="feasibility_status"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Installation Work Orders">
+                            <field name="installation_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="technician_lead_id"/>
+                                    <field name="scheduled_date"/>
+                                    <field name="status"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Registered Warranties">
+                            <field name="warranty_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="equipment_type"/>
+                                    <field name="serial_number"/>
+                                    <field name="warranty_status"/>
+                                    <field name="end_date"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Solar Project Tree View -->
+    <record id="view_solar_project_tree" model="ir.ui.view">
+        <field name="name">solar.project.tree</field>
+        <field name="model">solar.project</field>
+        <field name="arch" type="xml">
+            <tree string="Solar Projects">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="kw_capacity"/>
+                <field name="system_type"/>
+                <field name="stage"/>
+                <field name="contract_amount"/>
+                <field name="gross_margin"/>
+                <field name="installation_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Solar Project Action Window -->
+    <record id="action_solar_project" model="ir.actions.act_window">
+        <field name="name">Solar Projects</field>
+        <field name="res_model">solar.project</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create the first Solar Project Lifecycle record!
+            </p>
+        </field>
+    </record>
+</odoo>
