@@ -1,0 +1,85 @@
+﻿@import './variables.scss';
+
+.o_sunflow_layout {
+  display: flex;
+  height: 100vh;
+  background: var(--sunflow-bg);
+  color: var(--sunflow-text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+.o_sunflow_sidebar {
+  width: 260px;
+  background: var(--sunflow-sidebar-bg);
+  color: var(--sunflow-sidebar-text);
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #0b152d;
+}
+
+.o_sunflow_sidebar_header {
+  padding: 1rem 1.25rem;
+  font-weight: 600;
+  font-size: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.o_sunflow_sidebar_nav {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+}
+
+.o_sunflow_nav_item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  margin: 0.25rem 0;
+  border-radius: 6px;
+  color: var(--sunflow-sidebar-text);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.o_sunflow_nav_item.active,
+.o_sunflow_nav_item:hover {
+  background: var(--sunflow-sidebar-active);
+}
+
+.o_sunflow_main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.o_sunflow_header {
+  background: var(--sunflow-surface);
+  border-bottom: 1px solid var(--sunflow-border);
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--sunflow-shadow);
+}
+
+.o_sunflow_header_title {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.o_sunflow_breadcrumb {
+  color: var(--sunflow-text-secondary);
+  font-size: 0.875rem;
+}
+
+.o_sunflow_content {
+  flex: 1;
+  overflow: auto;
+  padding: 1.25rem;
+}
+
+@media (max-width: 768px) {
+  .o_sunflow_sidebar {
+    width: 220px;
+  }
+}

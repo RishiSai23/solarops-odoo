@@ -7,9 +7,19 @@
         <field name="arch" type="xml">
             <form string="Solar Project Lifecycle">
                 <header>
+                    <button name="action_approve_feasibility" string="Approve Feasibility &amp; Proceed to Quotation"
+                            type="object" class="btn btn-primary"
+                            invisible="stage != 'feasibility'"/>
+                    <button name="action_create_quotation" string="Create Quotation"
+                            type="object" class="btn btn-secondary"
+                            invisible="stage not in ('feasibility', 'quotation') or sale_order_id"/>
                     <field name="stage" widget="statusbar" statusbar_visible="lead,survey,feasibility,quotation,order,installation,commissioning,handover,warranty,closed"/>
+                    <button name="action_create_quotation" type="object" string="Create Quotation"
+                            class="oe_highlight"
+                            invisible="sale_order_id or stage not in ('feasibility','quotation')"/>
                 </header>
                 <sheet>
+                    <field name="sale_order_id" invisible="1"/>
                     <div class="oe_title">
                         <h1>
                             <field name="name" readonly="1"/>
@@ -20,9 +30,15 @@
                             <field name="partner_id"/>
                             <field name="kw_capacity"/>
                             <field name="system_type"/>
+                            <field name="feasibility_status" widget="badge"
+                                   decoration-success="feasibility_status == 'feasible'"
+                                   decoration-warning="feasibility_status == 'conditional'"
+                                   decoration-danger="feasibility_status == 'rejected'"/>
+                            <field name="approved_survey_id" invisible="not approved_survey_id" readonly="1"/>
                             <field name="assigned_technician_id"/>
                         </group>
                         <group string="Financials &amp; Timeline">
+                            <field name="sale_order_id" invisible="1"/>
                             <field name="contract_amount"/>
                             <field name="actual_cost"/>
                             <field name="gross_margin"/>
@@ -32,18 +48,85 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Site Surveys">
-                            <field name="survey_ids">
-                                <tree>
+                        <page string="Site Surveys" name="site_surveys">
+                            <div class="alert alert-success" role="alert" invisible="feasibility_status != 'feasible'">
+                                <strong>Technical Feasibility Approved!</strong>
+                                This project satisfies rooftop and electrical grid requirements and is ready for Quotation &amp; BOM.
+                            </div>
+                            <div class="alert alert-warning" role="alert" invisible="feasibility_status != 'conditional'">
+                                <strong>Conditional Feasibility Review Required!</strong>
+                                The site survey identified structural or electrical conditions requiring engineering evaluation before quotation.
+                            </div>
+                            <div class="alert alert-danger" role="alert" invisible="feasibility_status != 'rejected'">
+                                <strong>Site Survey Rejected!</strong>
+                                The rooftop was evaluated as not feasible for solar installation.
+                            </div>
+                            <field name="survey_ids" context="{'default_project_id': id, 'form_view_ref': 'sunflow_core.view_solar_survey_form'}">
+                                <tree string="Site Surveys"
+                                      decoration-success="feasibility_status == 'feasible'"
+                                      decoration-warning="feasibility_status == 'conditional'"
+                                      decoration-danger="feasibility_status == 'rejected'">
                                     <field name="name"/>
+                                    <field name="surveyor_id"/>
                                     <field name="survey_date"/>
                                     <field name="roof_type"/>
+                                    <field name="usable_area_sqft"/>
                                     <field name="sanctioned_load_kw"/>
-                                    <field name="feasibility_status"/>
+                                    <field name="meter_phase"/>
+                                    <field name="feasibility_status" widget="badge"
+                                           decoration-success="feasibility_status == 'feasible'"
+                                           decoration-warning="feasibility_status == 'conditional'"
+                                           decoration-danger="feasibility_status == 'rejected'"/>
                                 </tree>
+                                <form string="Site Survey">
+                                    <header>
+                                        <button name="action_set_feasible" string="Mark Feasible &amp; Approved" type="object" class="btn btn-success" invisible="feasibility_status == 'feasible'"/>
+                                        <button name="action_set_conditional" string="Mark Conditional" type="object" class="btn btn-warning" invisible="feasibility_status == 'conditional'"/>
+                                        <button name="action_set_rejected" string="Reject Survey" type="object" class="btn btn-danger" invisible="feasibility_status == 'rejected'"/>
+                                        <field name="feasibility_status" widget="statusbar"
+                                               statusbar_visible="draft,feasible,conditional,rejected"/>
+                                    </header>
+                                    <sheet>
+                                        <div class="oe_title">
+                                            <label for="name" string="Survey Reference"/>
+                                            <h1>
+                                                <field name="name" placeholder="e.g. SURV-2026-001"/>
+                                            </h1>
+                                        </div>
+                                        <group>
+                                            <group string="Project &amp; Surveyor">
+                                                <field name="project_id"/>
+                                                <field name="surveyor_id"/>
+                                                <field name="survey_date"/>
+                                            </group>
+                                            <group string="Electrical Feasibility">
+                                                <field name="sanctioned_load_kw"/>
+                                                <field name="meter_phase"/>
+                                                <field name="service_voltage"/>
+                                                <field name="feasibility_status"/>
+                                            </group>
+                                        </group>
+                                        <group string="Rooftop &amp; Solar Potential">
+                                            <group>
+                                                <field name="roof_type"/>
+                                                <field name="usable_area_sqft"/>
+                                            </group>
+                                            <group>
+                                                <field name="azimuth_degrees"/>
+                                                <field name="tilt_degrees"/>
+                                                <field name="shading_factor_pct"/>
+                                            </group>
+                                        </group>
+                                        <group string="Observations &amp; Notes">
+                                            <field name="shading_notes" placeholder="Obstacles, trees, parapet walls causing shadow..."/>
+                                            <field name="remarks" placeholder="General structural and electrical remarks..."/>
+                                            <field name="survey_notes" placeholder="Technical observations..."/>
+                                        </group>
+                                    </sheet>
+                                </form>
                             </field>
                         </page>
-                        <page string="Installation Work Orders">
+                        <page string="Installation Work Orders" name="installation_orders">
                             <field name="installation_ids">
                                 <tree>
                                     <field name="name"/>
@@ -53,7 +136,7 @@
                                 </tree>
                             </field>
                         </page>
-                        <page string="Registered Warranties">
+                        <page string="Registered Warranties" name="registered_warranties">
                             <field name="warranty_ids">
                                 <tree>
                                     <field name="name"/>
@@ -101,6 +184,105 @@
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Create the first Solar Project Lifecycle record!
+            </p>
+        </field>
+    </record>
+
+    <!-- ================================================================== -->
+    <!-- solar.survey — Rooftop Site Feasibility Views & Actions            -->
+    <!-- ================================================================== -->
+
+    <!-- Solar Survey Form View -->
+    <record id="view_solar_survey_form" model="ir.ui.view">
+        <field name="name">solar.survey.form</field>
+        <field name="model">solar.survey</field>
+        <field name="arch" type="xml">
+            <form string="Site Survey">
+                <header>
+                    <button name="action_set_feasible" string="Mark Feasible &amp; Approved" type="object" class="btn btn-success" invisible="feasibility_status == 'feasible'"/>
+                    <button name="action_set_conditional" string="Mark Conditional" type="object" class="btn btn-warning" invisible="feasibility_status == 'conditional'"/>
+                    <button name="action_set_rejected" string="Reject Survey" type="object" class="btn btn-danger" invisible="feasibility_status == 'rejected'"/>
+                    <field name="feasibility_status" widget="statusbar"
+                           statusbar_visible="draft,feasible,conditional,rejected"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Survey Reference"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. SURV-2026-001"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Project &amp; Surveyor">
+                            <field name="project_id"/>
+                            <field name="surveyor_id"/>
+                            <field name="survey_date"/>
+                        </group>
+                        <group string="Electrical Feasibility">
+                            <field name="sanctioned_load_kw"/>
+                            <field name="meter_phase"/>
+                            <field name="service_voltage"/>
+                            <field name="feasibility_status"/>
+                        </group>
+                    </group>
+                    <group string="Rooftop &amp; Solar Potential">
+                        <group>
+                            <field name="roof_type"/>
+                            <field name="usable_area_sqft"/>
+                        </group>
+                        <group>
+                            <field name="azimuth_degrees"/>
+                            <field name="tilt_degrees"/>
+                            <field name="shading_factor_pct"/>
+                        </group>
+                    </group>
+                    <group string="Observations &amp; Notes">
+                        <field name="shading_notes" placeholder="Obstacles, trees, parapet walls causing shadow..."/>
+                        <field name="remarks" placeholder="General structural and electrical remarks..."/>
+                        <field name="survey_notes" placeholder="Technical observations, obstacles, cable routing path..."/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Solar Survey Tree View -->
+    <record id="view_solar_survey_tree" model="ir.ui.view">
+        <field name="name">solar.survey.tree</field>
+        <field name="model">solar.survey</field>
+        <field name="arch" type="xml">
+            <tree string="Site Surveys"
+                  decoration-success="feasibility_status == 'feasible'"
+                  decoration-warning="feasibility_status == 'conditional'"
+                  decoration-danger="feasibility_status == 'rejected'">
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="surveyor_id"/>
+                <field name="survey_date"/>
+                <field name="roof_type"/>
+                <field name="usable_area_sqft"/>
+                <field name="sanctioned_load_kw"/>
+                <field name="meter_phase"/>
+                <field name="feasibility_status" widget="badge"
+                       decoration-success="feasibility_status == 'feasible'"
+                       decoration-warning="feasibility_status == 'conditional'"
+                       decoration-danger="feasibility_status == 'rejected'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Solar Survey Action Window -->
+    <record id="action_solar_survey" model="ir.actions.act_window">
+        <field name="name">Site Surveys</field>
+        <field name="res_model">solar.survey</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Record a new rooftop site feasibility survey!
             </p>
         </field>
     </record>

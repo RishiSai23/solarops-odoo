@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="sunflow_web.DirectorDashboard">
+        <WorkspaceLayout>
+            <div class="o_sunflow_content">
+                <div class="o_sunflow_page_intro">
+                    <h1 class="o_sunflow_page_title">Director Dashboard</h1>
+                    <p class="o_sunflow_page_subtitle">Monitor solar projects, installation progress and business performance. (Demo data)</p>
+                </div>
+
+                <div class="o_sunflow_kpi_grid">
+                    <t t-foreach="component.data.kpis" t-as="kpi" t-key="kpi.label">
+                        <KpiCard label="kpi.label" value="kpi.value" delta="kpi.delta"/>
+                    </t>
+                </div>
+
+                <div class="o_sunflow_section">
+                    <h2 class="o_sunflow_section_title">Project Pipeline (Demo)</h2>
+                    <div class="o_sunflow_pipeline">
+                        <t t-foreach="component.data.pipeline" t-as="p" t-key="p.stage">
+                            <div class="o_sunflow_pipeline_stage">
+                                <span class="o_sunflow_pipeline_label" t-esc="p.stage"/>
+                                <span class="o_sunflow_pipeline_count" t-esc="p.count"/>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+
+                <div class="o_sunflow_section">
+                    <h2 class="o_sunflow_section_title">Installation Overview (Demo)</h2>
+                    <div class="o_sunflow_install_grid">
+                        <t t-foreach="component.data.installation" t-as="i" t-key="i.status">
+                            <div class="o_sunflow_install_card">
+                                <span class="o_sunflow_install_label" t-esc="i.status"/>
+                                <span class="o_sunflow_install_count" t-esc="i.count"/>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+
+                <div class="o_sunflow_section">
+                    <h2 class="o_sunflow_section_title">Recent Projects (Demo)</h2>
+                    <DataTable columns="component.columns" rows="component.data.recentProjects"/>
+                </div>
+
+                <div class="o_sunflow_section">
+                    <h2 class="o_sunflow_section_title">Requires Attention (Demo)</h2>
+                    <div class="o_sunflow_activity_list">
+                        <t t-foreach="component.data.pendingActivities" t-as="a" t-key="a.reference">
+                            <div class="o_sunflow_activity_item">
+                                <span class="o_sunflow_activity_desc" t-esc="a.description"/>
+                                <span class="o_sunflow_activity_ref" t-esc="a.reference"/>
+                                <StatusBadge text="a.priority" type="a.priority === 'High' ? 'danger' : 'warning'"/>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+
+                <div class="o_sunflow_section">
+                    <h2 class="o_sunflow_section_title">Solar Business Insights (Demo)</h2>
+                    <div class="o_sunflow_insights">
+                        <div class="o_sunflow_insight">
+                            <span>Residential</span>
+                            <div class="o_sunflow_bar"><div class="o_sunflow_bar_fill" t-attf-style="width: {{component.data.insights.residential}}%"/></div>
+                            <span t-esc="component.data.insights.residential + '%'"/>
+                        </div>
+                        <div class="o_sunflow_insight">
+                            <span>Commercial</span>
+                            <div class="o_sunflow_bar"><div class="o_sunflow_bar_fill" t-attf-style="width: {{component.data.insights.commercial}}%"/></div>
+                            <span t-esc="component.data.insights.commercial + '%'"/>
+                        </div>
+                        <div class="o_sunflow_insight">
+                            <span>On-Grid</span>
+                            <div class="o_sunflow_bar"><div class="o_sunflow_bar_fill" t-attf-style="width: {{component.data.insights.onGrid}}%"/></div>
+                            <span t-esc="component.data.insights.onGrid + '%'"/>
+                        </div>
+                        <div class="o_sunflow_insight">
+                            <span>Off-Grid</span>
+                            <div class="o_sunflow_bar"><div class="o_sunflow_bar_fill" t-attf-style="width: {{component.data.insights.offGrid}}%"/></div>
+                            <span t-esc="component.data.insights.offGrid + '%'"/>
+                        </div>
+                        <div class="o_sunflow_insight">
+                            <span>Completion Rate</span>
+                            <div class="o_sunflow_bar"><div class="o_sunflow_bar_fill" t-attf-style="width: {{component.data.insights.completionRate}}%"/></div>
+                            <span t-esc="component.data.insights.completionRate + '%'"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </WorkspaceLayout>
+    </t>
+</templates>

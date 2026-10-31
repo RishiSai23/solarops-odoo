@@ -184,9 +184,13 @@ The FastAPI gateway exposes RESTful JSON endpoints under `/api/v1`:
 ## 8. Database Architecture
 
 Odoo's PostgreSQL database houses all models:
-- **`solar_project`**: Key fields: `name`, `partner_id`, `stage`, `kw_capacity`, `system_type`, `contract_amount`, `cost_amount`, `installation_date`.
+- **`solar_project`**: Key fields: `name`, `partner_id`, `stage`, `kw_capacity`, `system_type`, `contract_amount`, `cost_amount`, `installation_date`, `package_id`, `stock_requirement_ids`, `dispatch_ids`, `stock_ready`, `has_shortage`.
 - **`solar_survey`**: Key fields: `project_id`, `azimuth`, `tilt`, `shading_factor`, `roof_type`, `sanctioned_load_kw`, `meter_phase`, `geo_latitude`, `geo_longitude`.
-- **`solar_package`**: Key fields: `name`, `capacity_kw`, `package_type`, `panel_qty`, `inverter_wattage`, `battery_included`.
+- **`solar_package`**: Key fields: `name`, `capacity_kw`, `package_type`, `panel_qty`, `inverter_wattage`, `battery_included`, `component_ids`, `component_count`.
+- **`solar_package_component`** (BOM): Key fields: `package_id`, `product_id`, `product_tmpl_id`, `component_type`, `quantity`, `product_uom_id`, `is_serialized`.
+- **`solar_stock_requirement`**: Key fields: `project_id`, `sale_order_id`, `product_id`, `component_type`, `required_qty`, `qty_on_hand`, `qty_reserved`, `qty_incoming`, `qty_available`, `qty_shortage`, `has_shortage`, `status`, `picking_id`, `purchase_order_line_ids`.
+- **`solar_equipment_dispatch`**: Key fields: `name`, `project_id`, `partner_id`, `sale_order_id`, `picking_id`, `dispatch_date`, `actual_dispatch_date`, `dispatched_by`, `state`, `line_ids`, `serial_validation_complete`.
+- **`solar_equipment_dispatch_line`**: Key fields: `dispatch_id`, `product_id`, `component_type`, `quantity`, `is_serialized`, `lot_id`, `stock_requirement_id`.
 - **`solar_installation`**: Key fields: `project_id`, `technician_id`, `status`, `earthing_resistance_ohms`, `voc_measured_volts`, `handover_signature`, `completion_date`.
 - **`solar_warranty`**: Key fields: `project_id`, `serial_number_id`, `equipment_type`, `start_date`, `end_date`, `warranty_status`.
 
@@ -200,8 +204,12 @@ Odoo's PostgreSQL database houses all models:
   - `res.partner`: Customer details and address.
   - `crm.lead`: Pre-qualification leads.
   - `sale.order` & `sale.order.line`: Quotations and commercial orders.
-  - `stock.picking` & `stock.move`: Material movements and transfers.
-  - `stock.lot`: Traceable equipment serial numbers.
+  - `product.template` & `product.product`: Master components (panels, inverters, batteries, BOS).
+  - `stock.quant`: Live warehouse stock on-hand and reserved quantity queries.
+  - `stock.warehouse` & `stock.location`: Storage facilities and source/destination locations.
+  - `stock.picking` & `stock.move` & `stock.move.line`: Material transfers, picking validations, and dispatched moves.
+  - `stock.lot`: Traceable equipment serial numbers for inverters, batteries, and panels.
+  - `purchase.order` & `purchase.order.line`: Replenishment and vendor procurement for shortages.
   - `account.move`: Invoices and customer milestone payments.
   - `repair.order`: Equipment warranty replacements and repairs.
 
@@ -212,6 +220,42 @@ Odoo's PostgreSQL database houses all models:
 - **Discovery 001 (Environment Status)**: Python 3.10 and Node v22.14 are installed on the local system. Docker is installed but Docker Desktop daemon is not currently active.
 - **Architectural Solution**: The backend includes an auto-fallback **Sandbox / Mock Adapter**. When Odoo is reachable, calls route to real Odoo XML-RPC; when offline, the gateway serves consistent sandbox data matching Odoo data structures, enabling frictionless UI testing and development!
 - **Discovery 002 (Odoo Stubs & Frontend Dependencies)**: Since Odoo runtime runs containerized in Docker, the host Python 3.10 environment lacked `odoo` packages, generating IDE import errors. We added comprehensive Odoo interface stubs in `typings/odoo/__init__.pyi` mapped via `pyrightconfig.json` and `.vscode/settings.json`. Frontend packages were installed cleanly, achieving zero compilation errors with `npx tsc --noEmit`.
+- **Discovery 003 (Lightweight BOM Pattern vs. MRP Dependency)**: In Odoo, the native `mrp` module is heavy and often omitted in simple distribution/service installations. For solar EPC packaging, we implemented `solar.package.component` as a clean One2many BOM on `solar.package` linked directly to `product.product`. This retains 100% compatibility with standard Community Odoo without forcing the manufacturing stack.
+- **Discovery 004 (Stock Snapshotting & Zero Fake Movements)**: Rather than writing simulated inventory adjustments or fake stock quants, `solar.stock.requirement` queries native `stock.quant` and `purchase.order.line` directly to determine `qty_on_hand`, `qty_reserved`, `qty_available`, and `qty_incoming`. All inventory movements are strictly delegated to Odoo's native `stock.picking` execution pipeline.
+- **Discovery 005 (Dispatch Validation & Serial Traceability Chain)**: `solar.equipment.dispatch` validates that all serialized components (`is_serialized=True`) have an assigned `stock.lot`, verifies that the lot matches the correct product, confirms warehouse availability, and strictly prohibits assigning the same lot across multiple active customer projects. Upon validation, lots are synchronized directly to `stock.move.line.lot_id` and committed via native `stock.picking.button_validate()`.
+- **Discovery 006 (Phase 4 Runtime Verification & ORM Defensiveness)**: Executing the 25 `TransactionCase` tests and end-to-end integration workflows (`scripts/verify_phase4_runtime.py`) revealed two critical real-world runtime edge cases that passed static AST checks:
+  1. *Module attribute bug*: In `stock_requirement.py`, dead code in `_get_incoming_qty` referenced `models.fields.Float.compare` instead of `fields.Float.compare`, fixed by using standard python aggregation over `purchase.order.line`.
+  2. *Defensive UoM and Template Resolution*: In `action_create_purchase_order`, `self.product_id.product_tmpl_id.seller_ids` and `self.product_id.uom_po_id.id` raised `AttributeError` when products lacked template or PO UoM relations. Fixed by adding fallback to `product_id.uom_id` and defensive seller checks.
+  3. *Cross-Model Search Domain Optimization*: Querying `solar.equipment.dispatch.line` with nested domain `('dispatch_id.state', '=', 'dispatched')` was refactored to an explicit two-step query via `dispatched_headers.mapped('id')`, ensuring 100% database engine portability across Odoo 17 and 18.
+- **Discovery 007 (Odoo 17 Native Server Environment & View Engine Validation)**:
+  1. *Complete Deprecation of `attrs`*: In Odoo 17.0, `attrs="{'invisible': ...}"` and `attrs="{'required': ...}"` are completely removed from the view parser and will fail addon loading with `ParseError`. They must be written directly as `invisible="..."`, `required="..."`, and `readonly="..."`.
+  2. *Field Registration Rule for Dynamic Modifiers*: In Odoo 17, any field used in an `invisible` or `required` Python condition on a view (e.g., `invisible="not has_shortage"`, `invisible="not stock_ready or requirement_count == 0"`) MUST be explicitly present in that view definition (such as `<field name="has_shortage" invisible="1"/>`).
+  3. *Forbidden Translatable Selectors in View Inheritance*: In Odoo 17, `xpath expr="//notebook/page[@string='...']"` raises a hard `ParseError` (`View inheritance may not use attribute 'string' as a selector`). Views must select elements by `name` attribute or hierarchical position (e.g. `//notebook` with `position="inside"`).
+  4. *Odoo Model Instance Descriptors*: Methods on recordsets cannot be monkey-patched on instance objects (`AttributeError: read-only`). In tests, standard native execution or `unittest.mock.patch.object` on the model class should be utilized.
+  5. *Incoming Receipt Serial Tracking*: When receiving products tracked by serial number (`tracking='serial'`), native Odoo `stock.picking` requires specifying `stock.lot` on `stock.move.line` prior to executing `button_validate()`.
+  6. *Real-Time Creation Constraints*: Added `@api.constrains('lot_id', 'dispatch_id')` to `solar.equipment.dispatch.line` to prevent cross-project duplicate serial number assignment immediately at record creation/save time, complementing workflow action validation.
+
+- **Discovery 008 (One2many Fallback Views, Web Client Resolution, & Container In-Memory ORMCACHE)**:
+  1. *Web Client Form Resolution in Owl (`relational_utils.js`)*: When a user clicks "Add a line" on a One2many tree view, `useOpenX2ManyRecord` invokes `getFormViewInfo({ activeField, ... })`. If the parent view has an inline embedded `<form>` inside the `<field>` tag, `activeField.views.form` is immediately used. If absent, the web client executes an asynchronous `viewService.loadViews` RPC call to retrieve `[[false, 'form']]` for the comodel.
+  2. *In-Memory ORMCACHE Desynchronization*: In a persistent container running Odoo (`sunflow_odoo` PID 1), `ir.ui.view` methods (`_get_view`, `default_view`) utilize `@tools.ormcache` keyed by user context (including `lang='en_US'`). If a user opens a model before its view is declared, the fallback form is cached in RAM. Upgrading the database via a secondary CLI command (`odoo -u module --stop-after-init`) modifies PostgreSQL records but leaves PID 1's in-memory cache intact. A container restart (`docker restart sunflow_odoo`) or service reload is mandatory to evict stale view caches.
+  3. *Canonical Fix for One2many Modals*: Embed an explicit `<form>` directly inside the parent `<field name="survey_ids">` tag containing the required fields (Survey reference, Project, Surveyor, Survey date, Sanctioned load, Meter phase, Service voltage, Roof type, Usable area, Azimuth, Tilt, Shading percentage, Shading notes, Remarks, Feasibility status), pass `context="{'default_project_id': id, 'form_view_ref': 'sunflow_core.view_solar_survey_form'}"`, and restart the server container.
+
+- **Discovery 009 (Site Survey Approval & Project Lifecycle Stage Progression Engine)**:
+  1. *Decoupled Survey State vs Project Stage*: `solar.survey` tracks technical feasibility (`draft`, `feasible`, `conditional`, `rejected`), while `solar.project` tracks macro project stages (`lead`, `survey`, `feasibility`, `quotation`, `procurement`, `installation`, etc.). Updating a survey's status on `SPF-0117` did not advance the project from "Enquiry / Lead" because no synchronizer or transition hooks existed to bridge survey feasibility and project stages.
+  2. *Automatic Synchronization & Governance Gate*:
+     - Linking a survey moves the project from `lead` -> `survey`.
+     - Marking a survey `feasible` or `conditional` automatically triggers `_sync_survey_feasibility()` to transition the project from `lead`/`survey` -> `feasibility` ("Feasibility Review"), computes `feasibility_status`, and registers `approved_survey_id`.
+     - Advancing from `feasibility` -> `quotation` ("Quotation & BOM") requires formal engineering sign-off via `action_approve_feasibility()`.
+  3. *Six Rigorous Business Rules & Sanctioned Load Guard*:
+     - *Rule 1 (Draft Guard)*: Draft surveys cannot authorize quotation generation.
+     - *Rule 2 (Rejected Guard)*: Rejected surveys cannot authorize quotation generation.
+     - *Rule 3 (Conditional Guard)*: Conditional surveys require engineering review before quotation.
+     - *Rule 4 (Grid Incompatibility Guard)*: System capacity must not exceed utility sanctioned grid load (`kw_capacity <= sanctioned_load_kw`). Enforced by `@api.constrains('feasibility_status', 'sanctioned_load_kw', 'project_id')` on `solar.survey`, blocking `feasible` status if capacity > grid connection.
+     - *Rules 5 & 6 (Multiple Surveys & Non-Destructive Invalidation)*: Multiple surveys prioritize approved feasible surveys; subsequent rejected surveys never silently overwrite or invalidate an approved feasible survey.
+     - *Quotation Generation*: `action_create_quotation()` automatically creates a native Odoo `sale.order` with project and package lines.
+  4. *Dual Verification*:
+     - 10 `TransactionCase` tests in `test_survey_lifecycle.py` (35/35 test suite PASS).
+     - 7/7 live HTTP JSON-RPC verification steps in `scripts/verify_survey_lifecycle_e2e.py` executed on `sunflow_test` against project `SPF-0117` and test projects.
 
 ---
 
@@ -221,3 +265,8 @@ Odoo's PostgreSQL database houses all models:
 |---|---|---|
 | 2026-10-31 | Antigravity AI | Initialized repository foundation, defined 19-stage lifecycle architecture, created documentation system. |
 | 2026-10-31 | Antigravity AI | Resolved IDE diagnostics: installed frontend node_modules, created Odoo type stubs in typings/, configured pyright and vscode settings. |
+| 2026-10-31 | Antigravity AI | **Phase 4 Implementation**: Stock & Procurement Management in `odoo_addons/sunflow_core`. Added BOM (`solar.package.component`), inventory demand (`solar.stock.requirement`), serialized dispatch (`solar.equipment.dispatch`), Odoo stock/purchase integration, data sequences/categories (`solar_data.xml`), UI views (`inventory_views.xml`), security ACLs, and test suite (`test_phase4_inventory.py`). |
+| 2026-10-31 | Antigravity AI | **Phase 4 Runtime Verification**: Created `scripts/verify_phase4_runtime.py` executing all 25 `TransactionCase` tests (100% PASS) and verifying Scenarios 4–11 (BOM demand generation, PO creation, incoming receipts, serialized dispatch, duplicate lot rejection, failed dispatch rollback, ACLs, and customer equipment history). Fixed 3 runtime bugs. |
+| 2026-10-31 | Antigravity AI | **Phase 4 Final Integration Gate (Genuine Odoo 17 Server + PostgreSQL)**: Launched genuine Odoo 17 and PostgreSQL 16 containers via Docker. Resolved Odoo 17 XML modifier syntax (`attrs` removal), view field registration, and xpath inheritance constraints. Successfully installed and upgraded `sunflow_core` on test database `sunflow_test`. Executed the entire 25-test `TransactionCase` test suite (25/25 PASS, 0 failures, 0 errors). Created and verified 15-step end-to-end integration workflow script (`verify_runtime_e2e.py`) in Odoo shell. Enforced cross-project duplicate serial constraint. System 100% certified ready for Phase 5. |
+| 2026-10-31 | Antigravity AI | **Site Survey UI Defect Investigation & Embedded Modal Fix**: Resolved issue where clicking "Site Surveys → Add a line" showed generic `mail.thread` fields. Added missing fields to `solar.survey` (`service_voltage`, `shading_notes`, `remarks`), embedded explicit `<form>` directly inside `<field name="survey_ids">` in `view_solar_project_form`, configured `context="{'default_project_id': id, 'form_view_ref': 'sunflow_core.view_solar_survey_form'}"`, restarted Odoo container to clear stale in-memory ORMCACHE, and verified all 8 runtime browser acceptance criteria over HTTP JSON-RPC (`scripts/verify_survey_popup_e2e.py`). 25/25 regression tests pass. |
+| 2026-10-31 | Antigravity AI | **Site Survey Approval & Project Lifecycle Integration**: Solved decouple between survey approval and project stage. Added `feasibility_status`, `approved_survey_id`, `_sync_survey_feasibility()`, `action_approve_feasibility()`, `action_create_quotation()`, and grid load constraints (`kw_capacity <= sanctioned_load_kw`). Built 10 new `TransactionCase` tests (35/35 PASS) and verified live on `SPF-0117` via HTTP JSON-RPC (`scripts/verify_survey_lifecycle_e2e.py`, 7/7 PASS). |

@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="sunflow_web.EmptyState">
+        <div class="o_sunflow_state">
+            <span class="o_sunflow_state_title" t-esc="props.title or 'No data'"/>
+            <span t-if="props.description" t-esc="props.description"/>
+        </div>
+    </t>
+</templates>
