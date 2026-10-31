@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_solar_project_user,solar.project.user,model_solar_project,base.group_user,1,1,1,0
+access_solar_project_manager,solar.project.manager,model_solar_project,base.group_system,1,1,1,1
+access_solar_survey_user,solar.survey.user,model_solar_survey,base.group_user,1,1,1,0
+access_solar_survey_manager,solar.survey.manager,model_solar_survey,base.group_system,1,1,1,1
+access_solar_package_user,solar.package.user,model_solar_package,base.group_user,1,0,0,0
+access_solar_package_manager,solar.package.manager,model_solar_package,base.group_system,1,1,1,1
+access_solar_installation_user,solar.installation.user,model_solar_installation,base.group_user,1,1,1,0
+access_solar_installation_manager,solar.installation.manager,model_solar_installation,base.group_system,1,1,1,1
+access_solar_warranty_user,solar.warranty.user,model_solar_warranty,base.group_user,1,1,1,0
+access_solar_warranty_manager,solar.warranty.manager,model_solar_warranty,base.group_system,1,1,1,1
