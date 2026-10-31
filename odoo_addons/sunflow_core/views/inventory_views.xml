@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================================================================== -->
+    <!-- solar.package.component — BOM Lines                                 -->
+    <!-- ================================================================== -->
+
+    <record id="view_solar_package_component_tree" model="ir.ui.view">
+        <field name="name">solar.package.component.tree</field>
+        <field name="model">solar.package.component</field>
+        <field name="arch" type="xml">
+            <tree string="Package BOM Components" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="product_id"/>
+                <field name="component_type"/>
+                <field name="quantity"/>
+                <field name="product_uom_id"/>
+                <field name="is_serialized"/>
+                <field name="notes"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_solar_package_component_form" model="ir.ui.view">
+        <field name="name">solar.package.component.form</field>
+        <field name="model">solar.package.component</field>
+        <field name="arch" type="xml">
+            <form string="BOM Component">
+                <sheet>
+                    <group>
+                        <group string="Product">
+                            <field name="product_id"/>
+                            <field name="component_type"/>
+                            <field name="quantity"/>
+                            <field name="product_uom_id"/>
+                        </group>
+                        <group string="Tracking">
+                            <field name="is_serialized"/>
+                            <field name="notes"/>
+                            <field name="sequence"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================================================================== -->
+    <!-- solar.package — Extended Form with BOM Tab                          -->
+    <!-- ================================================================== -->
+
+    <record id="view_solar_package_form" model="ir.ui.view">
+        <field name="name">solar.package.form</field>
+        <field name="model">solar.package</field>
+        <field name="arch" type="xml">
+            <form string="Solar Package">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_components"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-list">
+                            <field name="component_count" widget="statinfo" string="BOM Lines"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="e.g. 3 kW On-Grid Premium"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Configuration">
+                            <field name="capacity_kw"/>
+                            <field name="system_type"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Equipment Summary">
+                            <field name="panel_wattage"/>
+                            <field name="panel_count"/>
+                            <field name="inverter_capacity_kw"/>
+                            <field name="battery_bank_kwh"/>
+                        </group>
+                        <group string="Pricing">
+                            <field name="base_price"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Bill of Materials" name="bom">
+                            <field name="component_ids" widget="one2many_list">
+                                <tree editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_id"/>
+                                    <field name="component_type"/>
+                                    <field name="quantity"/>
+                                    <field name="product_uom_id"/>
+                                    <field name="is_serialized"/>
+                                    <field name="notes"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Description" name="description">
+                            <field name="description" placeholder="Package technical specifications..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_solar_package_tree" model="ir.ui.view">
+        <field name="name">solar.package.tree</field>
+        <field name="model">solar.package</field>
+        <field name="arch" type="xml">
+            <tree string="Solar Packages">
+                <field name="name"/>
+                <field name="capacity_kw"/>
+                <field name="system_type"/>
+                <field name="panel_count"/>
+                <field name="inverter_capacity_kw"/>
+                <field name="battery_bank_kwh"/>
+                <field name="component_count"/>
+                <field name="base_price"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_solar_package" model="ir.actions.act_window">
+        <field name="name">Solar Packages</field>
+        <field name="res_model">solar.package</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Define the first Solar Package with its Bill of Materials!
+            </p>
+        </field>
+    </record>
+
+    <!-- ================================================================== -->
+    <!-- solar.stock.requirement — Inventory Demand Lines                    -->
+    <!-- ================================================================== -->
+
+    <record id="view_solar_stock_requirement_tree" model="ir.ui.view">
+        <field name="name">solar.stock.requirement.tree</field>
+        <field name="model">solar.stock.requirement</field>
+        <field name="arch" type="xml">
+            <tree string="Stock Requirements"
+                  decoration-danger="has_shortage == True"
+                  decoration-success="status == 'available'"
+                  decoration-info="status == 'dispatched'">
+                <field name="sequence" widget="handle"/>
+                <field name="project_id"/>
+                <field name="product_id"/>
+                <field name="component_type"/>
+                <field name="required_qty"/>
+                <field name="product_uom_id"/>
+                <field name="qty_on_hand"/>
+                <field name="qty_reserved"/>
+                <field name="qty_incoming"/>
+                <field name="qty_available"/>
+                <field name="qty_shortage" decoration-danger="qty_shortage &gt; 0"/>
+                <field name="is_serialized"/>
+                <field name="status" widget="badge"
+                       decoration-danger="status == 'shortage'"
+                       decoration-warning="status == 'partial'"
+                       decoration-success="status in ('available', 'reserved', 'dispatched')"
+                       decoration-muted="status == 'draft'"/>
+                <field name="has_shortage" invisible="1"/>
+                <button name="action_check_stock" type="object"
+                        string="Refresh" icon="fa-refresh"
+                        title="Refresh stock availability"/>
+                <button name="action_create_purchase_order" type="object"
+                        string="Buy" icon="fa-shopping-cart"
+                        title="Create purchase order to cover shortage"
+                        invisible="not has_shortage"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_solar_stock_requirement_form" model="ir.ui.view">
+        <field name="name">solar.stock.requirement.form</field>
+        <field name="model">solar.stock.requirement</field>
+        <field name="arch" type="xml">
+            <form string="Stock Requirement">
+                <header>
+                    <button name="action_check_stock" type="object"
+                            string="Refresh Stock" class="btn-primary"/>
+                    <button name="action_create_purchase_order" type="object"
+                            string="Create Purchase Order"
+                            invisible="not has_shortage"/>
+                    <field name="status" widget="statusbar"
+                           statusbar_visible="draft,available,shortage,reserved,dispatched"/>
+                </header>
+                <sheet>
+                    <field name="has_shortage" invisible="1"/>
+                    <group>
+                        <group string="Project &amp; Product">
+                            <field name="project_id"/>
+                            <field name="sale_order_id"/>
+                            <field name="product_id"/>
+                            <field name="component_type"/>
+                            <field name="required_qty"/>
+                            <field name="product_uom_id"/>
+                            <field name="is_serialized"/>
+                        </group>
+                        <group string="Stock Snapshot">
+                            <field name="qty_on_hand"/>
+                            <field name="qty_reserved"/>
+                            <field name="qty_incoming"/>
+                            <field name="qty_available"/>
+                            <field name="qty_shortage"
+                                   decoration-danger="qty_shortage &gt; 0"/>
+                        </group>
+                    </group>
+                    <group string="Linked Operations">
+                        <field name="picking_id"/>
+                        <field name="purchase_order_line_ids" widget="many2many_tags"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_solar_stock_requirement" model="ir.actions.act_window">
+        <field name="name">Stock Requirements</field>
+        <field name="res_model">solar.stock.requirement</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Stock requirements are auto-generated from confirmed solar orders.
+            </p>
+        </field>
+    </record>
+
+    <!-- Shortages-only filter action -->
+    <record id="action_solar_stock_shortages" model="ir.actions.act_window">
+        <field name="name">Stock Shortages</field>
+        <field name="res_model">solar.stock.requirement</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('status', 'in', ['shortage', 'partial'])]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No stock shortages — all requirements are met!
+            </p>
+        </field>
+    </record>
+
+    <!-- ================================================================== -->
+    <!-- solar.equipment.dispatch — Dispatch Header + Lines                  -->
+    <!-- ================================================================== -->
+
+    <record id="view_solar_equipment_dispatch_form" model="ir.ui.view">
+        <field name="name">solar.equipment.dispatch.form</field>
+        <field name="model">solar.equipment.dispatch</field>
+        <field name="arch" type="xml">
+            <form string="Equipment Dispatch">
+                <header>
+                    <button name="action_mark_ready" type="object"
+                            string="Mark Ready"
+                            invisible="state != 'draft'"
+                            class="btn-primary"/>
+                    <button name="action_validate_dispatch" type="object"
+                            string="Validate Dispatch"
+                            invisible="state != 'ready'"
+                            class="btn-success"
+                            confirm="Validate dispatch? Odoo delivery order will be confirmed and stock will be deducted."/>
+                    <button name="action_cancel" type="object"
+                            string="Cancel"
+                            invisible="state in ('dispatched', 'cancelled')"/>
+                    <button name="action_view_picking" type="object"
+                            string="View Delivery Order"
+                            invisible="not picking_id"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,ready,dispatched"/>
+                </header>
+                <sheet>
+                    <field name="serial_validation_complete" invisible="1"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" name="action_view_picking"
+                                class="oe_stat_button" icon="fa-truck"
+                                invisible="not picking_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Delivery Order</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Project &amp; Customer">
+                            <field name="project_id"/>
+                            <field name="partner_id"/>
+                            <field name="sale_order_id"/>
+                        </group>
+                        <group string="Dispatch Details">
+                            <field name="dispatch_date"/>
+                            <field name="picking_id"/>
+                            <field name="actual_dispatch_date"/>
+                            <field name="dispatched_by"/>
+                        </group>
+                    </group>
+                    <!-- Serial validation progress bar -->
+                    <group invisible="total_lines == 0">
+                        <div class="alert alert-info" role="alert"
+                             invisible="serial_validation_complete">
+                            <strong>Serial Numbers Pending:</strong>
+                            <field name="validated_lines"/> of
+                            <field name="total_lines"/> lines have serial numbers assigned.
+                        </div>
+                        <div class="alert alert-success" role="alert"
+                             invisible="not serial_validation_complete">
+                            <strong>All serial numbers validated. Ready to dispatch.</strong>
+                        </div>
+                    </group>
+                    <notebook>
+                        <page string="Equipment Lines" name="lines">
+                            <field name="line_ids">
+                                <tree editable="bottom"
+                                      decoration-danger="is_serialized == True and lot_id == False">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_id"/>
+                                    <field name="component_type"/>
+                                    <field name="quantity"/>
+                                    <field name="is_serialized"/>
+                                    <field name="lot_id"
+                                           required="is_serialized"/>
+                                    <field name="stock_requirement_id" optional="hide"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Dispatch instructions, special handling notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_solar_equipment_dispatch_tree" model="ir.ui.view">
+        <field name="name">solar.equipment.dispatch.tree</field>
+        <field name="model">solar.equipment.dispatch</field>
+        <field name="arch" type="xml">
+            <tree string="Equipment Dispatches"
+                  decoration-success="state == 'dispatched'"
+                  decoration-info="state == 'ready'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="partner_id"/>
+                <field name="dispatch_date"/>
+                <field name="picking_id"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'dispatched'"
+                       decoration-info="state == 'ready'"
+                       decoration-muted="state == 'cancelled'"/>
+                <field name="actual_dispatch_date"/>
+                <field name="dispatched_by"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_solar_equipment_dispatch" model="ir.actions.act_window">
+        <field name="name">Equipment Dispatches</field>
+        <field name="res_model">solar.equipment.dispatch</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create an equipment dispatch to send components to a solar project site.
+            </p>
+        </field>
+    </record>
+
+    <!-- ================================================================== -->
+    <!-- solar.project — Extended Form with Phase 4 Inventory Tab            -->
+    <!-- ================================================================== -->
+
+    <record id="view_solar_project_form_phase4" model="ir.ui.view">
+        <field name="name">solar.project.form.phase4</field>
+        <field name="model">solar.project</field>
+        <field name="inherit_id" ref="sunflow_core.view_solar_project_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Insert button_box before title with smart buttons -->
+            <xpath expr="//sheet/div[hasclass('oe_title')]" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_view_requirements" type="object"
+                            class="oe_stat_button" icon="fa-cubes">
+                        <field name="requirement_count" widget="statinfo" string="Requirements"/>
+                    </button>
+                    <button name="action_view_dispatches" type="object"
+                            class="oe_stat_button" icon="fa-truck">
+                        <field name="dispatch_count" widget="statinfo" string="Dispatches"/>
+                    </button>
+                </div>
+            </xpath>
+
+            <!-- Add package_id below system_type in the first group -->
+            <xpath expr="//field[@name='system_type']" position="after">
+                <field name="package_id"/>
+            </xpath>
+
+            <!-- Add Inventory notebook page -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Inventory &amp; Dispatch" name="inventory">
+                    <field name="has_shortage" invisible="1"/>
+                    <field name="stock_ready" invisible="1"/>
+                    <!-- Shortage / Ready indicator -->
+                    <div class="alert alert-danger" role="alert"
+                         invisible="not has_shortage">
+                        <strong>Stock Shortage Detected!</strong>
+                        One or more components are below required quantity.
+                        Use "Check Stock" or create a Purchase Order.
+                    </div>
+                    <div class="alert alert-success" role="alert"
+                         invisible="not stock_ready or requirement_count == 0">
+                        <strong>All stock requirements met — ready for dispatch.</strong>
+                    </div>
+
+                    <!-- Action buttons -->
+                    <div class="o_row mb8">
+                        <button name="action_generate_stock_requirements" type="object"
+                                string="Generate Stock Requirements"
+                                class="btn btn-primary"
+                                invisible="not package_id"/>
+                        <button name="action_check_all_stock" type="object"
+                                string="Refresh Stock"
+                                class="btn btn-secondary"
+                                invisible="requirement_count == 0"/>
+                        <button name="action_create_dispatch" type="object"
+                                string="Create Dispatch"
+                                class="btn btn-secondary"
+                                invisible="requirement_count == 0"/>
+                    </div>
+
+                    <!-- Requirements list -->
+                    <field name="stock_requirement_ids" mode="tree">
+                        <tree string="Stock Requirements"
+                              decoration-danger="has_shortage == True"
+                              decoration-success="status in ('available', 'reserved', 'dispatched')">
+                            <field name="product_id"/>
+                            <field name="component_type"/>
+                            <field name="required_qty"/>
+                            <field name="product_uom_id"/>
+                            <field name="qty_on_hand"/>
+                            <field name="qty_available"/>
+                            <field name="qty_shortage" decoration-danger="qty_shortage &gt; 0"/>
+                            <field name="qty_incoming"/>
+                            <field name="is_serialized"/>
+                            <field name="status" widget="badge"
+                                   decoration-danger="status == 'shortage'"
+                                   decoration-warning="status == 'partial'"
+                                   decoration-success="status in ('available', 'reserved', 'dispatched')"/>
+                            <field name="has_shortage" invisible="1"/>
+                            <button name="action_check_stock" type="object"
+                                    string="Refresh" icon="fa-refresh"/>
+                            <button name="action_create_purchase_order" type="object"
+                                    string="Buy" icon="fa-shopping-cart"
+                                    invisible="not has_shortage"/>
+                        </tree>
+                    </field>
+
+                    <!-- Dispatch history -->
+                    <separator string="Dispatch History"/>
+                    <field name="dispatch_ids" mode="tree">
+                        <tree string="Dispatches">
+                            <field name="name"/>
+                            <field name="dispatch_date"/>
+                            <field name="state" widget="badge"
+                                   decoration-success="state == 'dispatched'"
+                                   decoration-info="state == 'ready'"/>
+                            <field name="dispatched_by"/>
+                            <field name="actual_dispatch_date"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
+
