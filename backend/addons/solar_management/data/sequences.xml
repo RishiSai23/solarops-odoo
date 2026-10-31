@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Sequence for Solar Leads -->
+    <record id="seq_solar_lead" model="ir.sequence">
+        <field name="name">Solar Lead</field>
+        <field name="code">solar.lead</field>
+        <field name="prefix">LEAD/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Sequence for Rooftop Site Surveys -->
+    <record id="seq_site_survey" model="ir.sequence">
+        <field name="name">Site Survey</field>
+        <field name="code">solar.site.survey</field>
+        <field name="prefix">SURV/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Sequence for Solar Projects -->
+    <record id="seq_solar_project" model="ir.sequence">
+        <field name="name">Solar Project</field>
+        <field name="code">solar.project</field>
+        <field name="prefix">PROJ/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Sequence for Solar Installations -->
+    <record id="seq_solar_installation" model="ir.sequence">
+        <field name="name">Solar Installation</field>
+        <field name="code">solar.installation</field>
+        <field name="prefix">INST/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Sequence for After-Sales Service Tickets -->
+    <record id="seq_solar_service_ticket" model="ir.sequence">
+        <field name="name">Solar Service Ticket</field>
+        <field name="code">solar.service.ticket</field>
+        <field name="prefix">SRV/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

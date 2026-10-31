@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Module Category for SolarOps -->
+    <record id="module_category_solar_management" model="ir.module.category">
+        <field name="name">Solar Management</field>
+        <field name="description">Access rights and security hierarchy for SolarOps lifecycle management.</field>
+        <field name="sequence">25</field>
+    </record>
+
+    <!-- SolarOps User Group -->
+    <record id="group_solar_user" model="res.groups">
+        <field name="name">SolarOps User</field>
+        <field name="category_id" ref="module_category_solar_management"/>
+        <field name="comment">Standard operational role with access to view and execute assigned solar operations (surveys, leads, installations, service tickets).</field>
+    </record>
+
+    <!-- SolarOps Manager Group (implies User group) -->
+    <record id="group_solar_manager" model="res.groups">
+        <field name="name">SolarOps Manager</field>
+        <field name="category_id" ref="module_category_solar_management"/>
+        <field name="implied_ids" eval="[(4, ref('group_solar_user'))]"/>
+        <field name="comment">Administrative manager role with full oversight, approvals, configurations, and reporting access across the SolarOps system.</field>
+    </record>
+</odoo>
