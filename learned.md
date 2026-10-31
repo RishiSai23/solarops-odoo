@@ -212,6 +212,7 @@ Odoo's PostgreSQL database houses all models:
 - **Discovery 001 (Environment Status)**: Python 3.10 and Node v22.14 are installed on the local system. Docker is installed but Docker Desktop daemon is not currently active.
 - **Architectural Solution**: The backend includes an auto-fallback **Sandbox / Mock Adapter**. When Odoo is reachable, calls route to real Odoo XML-RPC; when offline, the gateway serves consistent sandbox data matching Odoo data structures, enabling frictionless UI testing and development!
 - **Discovery 002 (Odoo Stubs & Frontend Dependencies)**: Since Odoo runtime runs containerized in Docker, the host Python 3.10 environment lacked `odoo` packages, generating IDE import errors. We added comprehensive Odoo interface stubs in `typings/odoo/__init__.pyi` mapped via `pyrightconfig.json` and `.vscode/settings.json`. Frontend packages were installed cleanly, achieving zero compilation errors with `npx tsc --noEmit`.
+- **Discovery 003 (Odoo 17 Salesperson group external ID)**: `sale.group_sale_salesperson` does NOT exist in Odoo 17. Verified against Odoo 17 source (`addons/sale/security/ir.model.access.csv` and `addons/sale_management/__manifest__.py`): the Salesperson group is `sales_team.group_sale_salesman`, which grants full CRUD on `sale.order`. The `sale.order` model is provided by the `sale` module. `sunflow_core.__manifest__` already declares `sale_management` (the Odoo 17 Sales app), which depends on `sale` → `sales_team`, so no manifest dependency change is required.
 
 ---
 

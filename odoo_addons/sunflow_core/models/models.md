@@ -12,7 +12,8 @@ Currently, `models/` contains no subdirectories. All model definitions reside di
 |---|---|
 | `__init__.py` | Python package initialization importing all model definitions. |
 | `project_lifecycle.py` | Defines `solar.project`, the central lifecycle coordinator connecting CRM leads, surveys, sales orders, field installations, and gross margins. |
-| `site_survey.py` | Defines `solar.survey`, capturing technical rooftop measurements, azimuth, tilt angles, shading factors, and grid feasibility. |
+| `site_survey.py` | Defines `solar.survey`, capturing technical rooftop measurements, azimuth, tilt angles, shading factors, and grid feasibility, plus workflow state transitions. |
+| `survey_reject_wizard.py` | Defines `solar.survey.reject.wizard`, a transient wizard that collects required rejection remarks and calls `solar.survey.action_reject()`. |
 | `solar_package.py` | Defines `solar.package`, maintaining standardized 1kW – 5kW system configuration kits and component counts. |
 | `installation_order.py` | Defines `solar.installation`, capturing technician work orders, electrical safety checklists, and customer handover signatures. |
 | `warranty_registry.py` | Defines `solar.warranty`, recording equipment serial numbers (panels, inverters, batteries) and managing multi-year warranty terms. |

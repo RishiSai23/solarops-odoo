@@ -17,4 +17,10 @@
               parent="menu_sunflow_operations"
               action="action_solar_project"
               sequence="10"/>
+
+    <menuitem id="menu_sunflow_site_survey"
+              name="Site Survey"
+              parent="menu_sunflow_operations"
+              action="action_solar_site_survey"
+              sequence="20"/>
 </odoo>

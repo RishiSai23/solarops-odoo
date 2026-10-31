@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Sequence for SunFlow Core Site Surveys.
+         Owned by sunflow_core. The separately-maintained solar_management addon
+         registers its own 'solar.site.survey' sequence, but solar_management is
+         not a dependency of sunflow_core, so reusing it would create an unsafe
+         cross-addon dependency. -->
+    <record id="seq_sunflow_core_site_survey" model="ir.sequence">
+        <field name="name">SunFlow Site Survey</field>
+        <field name="code">sunflow_core.site_survey</field>
+        <field name="prefix">SURV/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

@@ -7,9 +7,11 @@
 
 | Subdirectory | Responsibility |
 |---|---|
-| `models/` | Python data models defining `solar.project`, `solar.survey`, `solar.package`, `solar.installation`, and `solar.warranty`. |
+| `models/` | Python data models defining `solar.project`, `solar.survey`, `solar.survey.reject.wizard`, `solar.package`, `solar.installation`, and `solar.warranty`. |
+| `data/` | Declarative data records (Odoo sequences) loaded at install time. |
 | `security/` | Access control lists defining user and manager permissions (`ir.model.access.csv`). |
 | `views/` | Odoo XML views (form, tree, kanban) and top-level navigation menus. |
+| `tests/` | Odoo automated tests (`TransactionCase`) for survey workflow, quotation integration, and security. |
 
 ## 3. File Documentation
 

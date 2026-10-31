@@ -27,7 +27,10 @@ Project SunFlow: Unified Solar Operations & Lifecycle Management Platform
     ],
     'data': [
         'security/ir.model.access.csv',
+        'data/sequences.xml',
         'views/lifecycle_views.xml',
+        'views/survey_reject_wizard_view.xml',
+        'views/site_survey_views.xml',
         'views/menu_views.xml',
     ],
     'demo': [],

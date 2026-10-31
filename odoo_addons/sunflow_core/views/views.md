@@ -12,6 +12,8 @@ Currently, `views/` contains no subdirectories. All XML view definitions reside 
 |---|---|
 | `lifecycle_views.xml` | Form and tree view definitions for `solar.project` tracking lifecycle stages, embedded surveys, work orders, and registered warranties. |
 | `menu_views.xml` | Odoo application root and submenu definitions creating the "SunFlow Solar" menu in the standard Odoo top bar. |
+| `site_survey_views.xml` | Tree, form, search views and action window for `solar.survey`, including workflow state buttons and attachment fields. |
+| `survey_reject_wizard_view.xml` | Rejection wizard form view and action window (`target='new'`) for `solar.survey.reject.wizard`, opened from the survey form Reject button. |
 
 ## 4. Architectural Relationships
 These views render data modeled in `odoo_addons/sunflow_core/models/` inside standard Odoo web clients and are registered in `odoo_addons/sunflow_core/__manifest__.py`.

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
 
 class SolarProject(models.Model):
     _name = 'solar.project'
@@ -71,6 +72,45 @@ class SolarProject(models.Model):
     def _compute_gross_margin(self):
         for rec in self:
             rec.gross_margin = rec.contract_amount - rec.actual_cost
+
+    def _has_approved_feasible_survey(self):
+        self.ensure_one()
+        eligible = self.survey_ids.filtered(
+            lambda s: s.state == 'approved' and s.feasibility_status == 'feasible'
+        )
+        return bool(eligible)
+
+    def action_create_quotation(self):
+        for rec in self:
+            if not rec._has_approved_feasible_survey():
+                raise UserError(_(
+                    "Quotation cannot be created for project %s. "
+                    "At least one linked Site Survey must be Approved and "
+                    "Feasible (feasibility_status = feasible) before a quotation "
+                    "can be generated."
+                ) % rec.name)
+            if rec.sale_order_id:
+                raise UserError(_(
+                    "A Sales Order is already linked to project %s."
+                ) % rec.name)
+            sale_order = self.env['sale.order'].create({
+                'partner_id': rec.partner_id.id,
+                'origin': rec.name,
+            })
+            rec.write({
+                'sale_order_id': sale_order.id,
+                'stage': 'quotation',
+            })
+        return True
+
+    @api.constrains('sale_order_id')
+    def _check_quotation_eligibility(self):
+        for rec in self:
+            if rec.sale_order_id and not rec._has_approved_feasible_survey():
+                raise ValidationError(_(
+                    "Cannot link a Sales Order to project %s unless at least one "
+                    "linked Site Survey is Approved and Feasible."
+                ) % rec.name)
 
     @api.model_create_multi
     def create(self, vals_list):
