@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="sunflow_web.Header">
+        <header class="o_sunflow_header">
+            <div>
+                <div class="o_sunflow_header_title">Director / Admin</div>
+                <div class="o_sunflow_breadcrumb">Home / Overview</div>
+            </div>
+            <div>Admin User</div>
+        </header>
+    </t>
+</templates>

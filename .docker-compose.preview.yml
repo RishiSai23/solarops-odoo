@@ -1,0 +1,7 @@
+﻿services:
+  odoo:
+    volumes:
+      - ../frontend/sunflow_web:/mnt/frontend-addons/sunflow_web
+    command:
+      - odoo
+      - --addons-path=/mnt/extra-addons,/mnt/frontend-addons,/usr/lib/python3/dist-packages/odoo/addons

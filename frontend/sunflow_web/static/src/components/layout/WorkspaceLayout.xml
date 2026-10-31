@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="sunflow_web.WorkspaceLayout">
+        <div class="o_sunflow_layout">
+            <Sidebar/>
+            <div class="o_sunflow_main">
+                <Header/>
+                <main class="o_sunflow_content">
+                    <t t-slot="default"/>
+                </main>
+            </div>
+        </div>
+    </t>
+</templates>
+

@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="sunflow_web.LoadingState">
+        <div class="o_sunflow_state">
+            <span>Loading...</span>
+            <span class="o_sunflow_state_title" t-if="props.message" t-esc="props.message"/>
+        </div>
+    </t>
+</templates>

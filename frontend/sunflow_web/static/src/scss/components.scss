@@ -1,0 +1,116 @@
+﻿@import './variables.scss';
+
+.o_sunflow_kpi_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.o_sunflow_kpi_card {
+  background: var(--sunflow-surface);
+  border: 1px solid var(--sunflow-border);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  box-shadow: var(--sunflow-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.o_sunflow_kpi_label {
+  color: var(--sunflow-text-secondary);
+  font-size: 0.875rem;
+}
+
+.o_sunflow_kpi_value {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.o_sunflow_kpi_delta {
+  color: var(--sunflow-accent);
+  font-size: 0.875rem;
+}
+
+.o_sunflow_badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  border: 1px solid var(--sunflow-border);
+}
+
+.o_sunflow_badge.success {
+  color: var(--sunflow-accent);
+  border-color: rgba(34, 197, 94, 0.4);
+}
+
+.o_sunflow_table_wrapper {
+  background: var(--sunflow-surface);
+  border: 1px solid var(--sunflow-border);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--sunflow-shadow);
+}
+
+.o_sunflow_table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.o_sunflow_table thead {
+  background: #f9fafb;
+}
+
+.o_sunflow_table th,
+.o_sunflow_table td {
+  text-align: left;
+  padding: 0.625rem 0.875rem;
+  border-bottom: 1px solid var(--sunflow-border);
+}
+
+.o_sunflow_table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.o_sunflow_state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: var(--sunflow-text-secondary);
+  gap: 0.5rem;
+}
+
+.o_sunflow_state_title {
+  color: var(--sunflow-text-primary);
+  font-weight: 500;
+}
+
+.o_sunflow_page_intro { margin-bottom: 1.25rem; }
+.o_sunflow_page_title { margin: 0 0 0.25rem; font-size: 1.5rem; font-weight: 600; }
+.o_sunflow_page_subtitle { margin: 0; color: var(--sunflow-text-secondary); font-size: 0.9rem; }
+.o_sunflow_section { background: var(--sunflow-surface); border: 1px solid var(--sunflow-border); border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 1.25rem; box-shadow: var(--sunflow-shadow); }
+.o_sunflow_section_title { margin: 0 0 0.75rem; font-size: 1rem; font-weight: 600; }
+.o_sunflow_pipeline { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+.o_sunflow_pipeline_stage { flex: 1; min-width: 100px; background: #f9fafb; border: 1px solid var(--sunflow-border); border-radius: 6px; padding: 0.75rem; text-align: center; display: flex; flex-direction: column; gap: 0.25rem; }
+.o_sunflow_pipeline_label { font-size: 0.8rem; color: var(--sunflow-text-secondary); }
+.o_sunflow_pipeline_count { font-size: 1.25rem; font-weight: 600; color: var(--sunflow-accent); }
+.o_sunflow_install_grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.75rem; }
+.o_sunflow_install_card { background: #f9fafb; border: 1px solid var(--sunflow-border); border-radius: 6px; padding: 0.75rem; text-align: center; display: flex; flex-direction: column; gap: 0.25rem; }
+.o_sunflow_install_label { font-size: 0.8rem; color: var(--sunflow-text-secondary); }
+.o_sunflow_install_count { font-size: 1.25rem; font-weight: 600; }
+.o_sunflow_activity_list { display: flex; flex-direction: column; gap: 0.5rem; }
+.o_sunflow_activity_item { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0; border-bottom: 1px solid var(--sunflow-border); }
+.o_sunflow_activity_desc { flex: 1; font-size: 0.9rem; }
+.o_sunflow_activity_ref { font-size: 0.8rem; color: var(--sunflow-text-secondary); }
+.o_sunflow_insights { display: flex; flex-direction: column; gap: 0.5rem; }
+.o_sunflow_insight { display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem; }
+.o_sunflow_bar { flex: 1; height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; }
+.o_sunflow_bar_fill { height: 100%; background: var(--sunflow-accent); border-radius: 4px; }
+.o_sunflow_badge.danger { color: #dc2626; border-color: rgba(220,38,38,0.4); }
+.o_sunflow_badge.warning { color: #d97706; border-color: rgba(217,119,6,0.4); }
