@@ -5,4 +5,31 @@
               name="SolarOps"
               groups="group_solar_user,group_solar_manager"
               sequence="10"/>
+
+    <!-- Category 1: Sales & Customer Inquiries -->
+    <menuitem id="menu_solar_crm"
+              name="Sales &amp; Inquiries"
+              parent="menu_solar_root"
+              sequence="10"/>
+
+    <!-- Solar Leads & Inquiries Menu Item -->
+    <menuitem id="menu_solar_leads"
+              name="Solar Leads"
+              parent="menu_solar_crm"
+              action="action_solar_leads"
+              sequence="10"/>
+
+    <!-- Survey Ready Leads Menu Item -->
+    <menuitem id="menu_solar_survey_ready"
+              name="Survey Ready Leads"
+              parent="menu_solar_crm"
+              action="action_solar_leads_survey_ready"
+              sequence="20"/>
+
+    <!-- Solar Customers Menu Item -->
+    <menuitem id="menu_solar_customers"
+              name="Solar Customers"
+              parent="menu_solar_crm"
+              action="action_solar_customers"
+              sequence="30"/>
 </odoo>

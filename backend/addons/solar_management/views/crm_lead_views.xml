@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================================================================= -->
+    <!-- SOLAR LEAD TREE / LIST VIEW                                       -->
+    <!-- ================================================================= -->
+    <record id="view_solar_lead_tree" model="ir.ui.view">
+        <field name="name">crm.lead.solar.tree</field>
+        <field name="model">crm.lead</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <tree string="Solar Leads" sample="1" multi_edit="1">
+                <field name="solar_lead_ref" decoration-bf="1"/>
+                <field name="name" string="Inquiry Title"/>
+                <field name="contact_name"/>
+                <field name="partner_id" optional="show"/>
+                <field name="phone" class="o_force_ltr"/>
+                <field name="solar_lead_source" widget="badge" optional="show"/>
+                <field name="expected_capacity_kw" optional="show" string="Capacity (kW)"/>
+                <field name="solar_system_type" optional="show"/>
+                <field name="monthly_bill_amount" widget="monetary" optional="show"/>
+                <field name="roof_area_sqft" optional="hide"/>
+                <field name="solar_qualification_status" widget="badge"
+                       decoration-success="solar_qualification_status == 'qualified'"
+                       decoration-warning="solar_qualification_status == 'needs_info'"
+                       decoration-danger="solar_qualification_status == 'not_suitable'"
+                       decoration-muted="solar_qualification_status == 'not_evaluated'"/>
+                <field name="is_survey_ready" widget="boolean" optional="show"/>
+                <field name="is_solar_converted" widget="boolean" optional="show"/>
+                <field name="user_id" widget="many2one_avatar_user" optional="show"/>
+                <field name="team_id" optional="hide"/>
+                <field name="stage_id" widget="badge" optional="show"/>
+                <field name="company_currency" column_invisible="1"/>
+                <field name="company_id" column_invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ================================================================= -->
+    <!-- SOLAR LEAD FORM VIEW INHERITANCE                                  -->
+    <!-- ================================================================= -->
+    <record id="view_solar_lead_form" model="ir.ui.view">
+        <field name="name">crm.lead.solar.form</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+
+            <!-- Header Action Buttons -->
+            <xpath expr="//header" position="inside">
+                <button name="action_qualify_lead"
+                        string="Qualify Lead"
+                        type="object"
+                        class="oe_highlight"
+                        invisible="solar_qualification_status == 'qualified'"/>
+                <button name="action_mark_survey_ready"
+                        string="Mark Survey Ready"
+                        type="object"
+                        class="btn-primary"
+                        invisible="solar_qualification_status != 'qualified' or is_survey_ready"/>
+                <button name="action_solar_convert_to_customer"
+                        string="Convert to Solar Customer"
+                        type="object"
+                        class="oe_highlight"
+                        invisible="solar_qualification_status != 'qualified' or is_solar_converted"/>
+                <button name="action_needs_more_info"
+                        string="Needs More Info"
+                        type="object"
+                        invisible="solar_qualification_status in ('needs_info', 'not_suitable')"/>
+                <button name="action_mark_not_suitable"
+                        string="Mark Not Suitable"
+                        type="object"
+                        class="text-danger"
+                        invisible="solar_qualification_status == 'not_suitable'"/>
+                <button name="action_reset_qualification"
+                        string="Re-Evaluate"
+                        type="object"
+                        invisible="solar_qualification_status == 'not_evaluated'"/>
+            </xpath>
+
+            <!-- Sheet Top Ribbons -->
+            <xpath expr="//sheet" position="before">
+                <!-- Status indicator ribbons if applicable -->
+            </xpath>
+            <xpath expr="//sheet/div[hasclass('oe_title')]" position="before">
+                <widget name="web_ribbon" title="Not Suitable" bg_color="text-bg-danger"
+                        invisible="solar_qualification_status != 'not_suitable'"/>
+                <widget name="web_ribbon" title="Survey Ready" bg_color="text-bg-success"
+                        invisible="not is_survey_ready"/>
+                <div class="d-flex align-items-center mb-2">
+                    <span class="badge text-bg-light fs-6 text-primary border me-2">
+                        <field name="solar_lead_ref" readonly="1"/>
+                    </span>
+                    <field name="solar_qualification_status" widget="badge"
+                           decoration-success="solar_qualification_status == 'qualified'"
+                           decoration-warning="solar_qualification_status == 'needs_info'"
+                           decoration-danger="solar_qualification_status == 'not_suitable'"
+                           decoration-muted="solar_qualification_status == 'not_evaluated'"/>
+                    <field name="is_solar_converted" invisible="1"/>
+                </div>
+            </xpath>
+
+            <!-- Dedicated Solar Information Tab in Notebook -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Solar Information" name="solar_information">
+                    <group>
+                        <group string="Solar Requirements &amp; Sizing">
+                            <field name="solar_system_type"/>
+                            <field name="expected_capacity_kw"/>
+                            <field name="roof_area_sqft"/>
+                            <field name="roof_ownership"/>
+                            <field name="roof_suitability"/>
+                            <field name="grid_connectivity"/>
+                        </group>
+                        <group string="Electricity &amp; Consumption Profile">
+                            <field name="monthly_bill_amount"/>
+                            <field name="avg_monthly_consumption_kwh"/>
+                            <field name="company_currency" invisible="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Lead Intake &amp; Source">
+                            <field name="solar_lead_source"/>
+                            <field name="solar_remarks" placeholder="Customer requirements, backup expectations, preferred equipment..."/>
+                        </group>
+                        <group string="Pre-Qualification Audit">
+                            <field name="solar_qualification_status" widget="badge" readonly="1"
+                                   decoration-success="solar_qualification_status == 'qualified'"
+                                   decoration-warning="solar_qualification_status == 'needs_info'"
+                                   decoration-danger="solar_qualification_status == 'not_suitable'"
+                                   decoration-muted="solar_qualification_status == 'not_evaluated'"/>
+                            <field name="is_survey_ready" readonly="1"/>
+                            <field name="is_solar_converted" readonly="1"/>
+                            <field name="qualification_date" readonly="1"/>
+                            <field name="qualified_user_id" readonly="1"/>
+                            <field name="qualification_notes" placeholder="Notes on why lead requires info or was deemed unsuitable..."/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- ================================================================= -->
+    <!-- SOLAR LEAD SEARCH VIEW FILTERS                                    -->
+    <!-- ================================================================= -->
+    <record id="view_solar_lead_search" model="ir.ui.view">
+        <field name="name">crm.lead.solar.search</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_case_leads_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='assigned_to_me']" position="before">
+                <filter string="Qualified" name="filter_solar_qualified"
+                        domain="[('solar_qualification_status', '=', 'qualified')]"/>
+                <filter string="Pending Qualification" name="filter_solar_pending"
+                        domain="[('solar_qualification_status', '=', 'not_evaluated')]"/>
+                <filter string="Needs More Info" name="filter_solar_needs_info"
+                        domain="[('solar_qualification_status', '=', 'needs_info')]"/>
+                <filter string="Not Suitable" name="filter_solar_not_suitable"
+                        domain="[('solar_qualification_status', '=', 'not_suitable')]"/>
+                <filter string="Survey Ready" name="filter_solar_survey_ready"
+                        domain="[('is_survey_ready', '=', True)]"/>
+                <filter string="Converted to Solar Customer" name="filter_solar_converted"
+                        domain="[('is_solar_converted', '=', True)]"/>
+                <separator/>
+                <filter string="WhatsApp Inquiries" name="filter_source_whatsapp"
+                        domain="[('solar_lead_source', '=', 'whatsapp')]"/>
+                <filter string="Website Inquiries" name="filter_source_website"
+                        domain="[('solar_lead_source', '=', 'website')]"/>
+                <filter string="Phone Inquiries" name="filter_source_phone"
+                        domain="[('solar_lead_source', '=', 'phone')]"/>
+                <separator/>
+            </xpath>
+            <xpath expr="//group" position="inside">
+                <filter string="Qualification Status" name="group_by_solar_qualification"
+                        context="{'group_by': 'solar_qualification_status'}"/>
+                <filter string="Solar System Type" name="group_by_solar_system_type"
+                        context="{'group_by': 'solar_system_type'}"/>
+                <filter string="Solar Lead Source" name="group_by_solar_lead_source"
+                        context="{'group_by': 'solar_lead_source'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ================================================================= -->
+    <!-- SOLAR LEAD WINDOW ACTIONS                                         -->
+    <!-- ================================================================= -->
+    <record id="action_solar_leads" model="ir.actions.act_window">
+        <field name="name">Solar Leads</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+        <field name="view_id" ref="view_solar_lead_tree"/>
+        <field name="search_view_id" ref="crm.view_crm_case_leads_filter"/>
+        <field name="context">{
+            'default_type': 'lead',
+            'default_solar_lead_source': 'manual',
+            'search_default_assigned_to_me': 0,
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Register a new Solar Installation Lead or Customer Inquiry!
+            </p>
+            <p>
+                Capture incoming leads from WhatsApp, Phone, or Website, record electricity consumption
+                and rooftop dimensions, and perform technical pre-qualification before scheduling a site survey.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_solar_leads_survey_ready" model="ir.actions.act_window">
+        <field name="name">Survey Ready Leads</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="view_id" ref="view_solar_lead_tree"/>
+        <field name="search_view_id" ref="crm.view_crm_case_leads_filter"/>
+        <field name="domain">[('is_survey_ready', '=', True)]</field>
+        <field name="context">{
+            'default_type': 'lead',
+            'default_is_survey_ready': True,
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No leads currently awaiting rooftop site survey.
+            </p>
+            <p>
+                Leads that have passed technical pre-qualification and have a verified site address
+                will appear here for survey dispatch.
+            </p>
+        </field>
+    </record>
+
+</odoo>
