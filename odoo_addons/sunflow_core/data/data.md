@@ -1,20 +1,22 @@
 # Data Directory (`odoo_addons/sunflow_core/data/`)
 
 ## 1. Directory Overview
-The `data/` directory contains declarative data records loaded during addon installation, such as Odoo sequences that power auto-generated document references.
+The `data/` directory contains Odoo XML data files that are loaded during module installation. These define master data such as IR sequences, product categories, and other configuration records required for the SunFlow Core addon to function correctly.
 
 ## 2. Subdirectory Documentation
-Currently, `data/` contains no subdirectories. All data records reside directly in this directory.
+Currently, `data/` contains no subdirectories. All data files reside directly in this directory.
 
 ## 3. File Documentation
 
 | File | Responsibility |
 |---|---|
-| `sequences.xml` | Defines the `ir.sequence` (`sunflow_core.site_survey`) used to generate unique `solar.survey` reference numbers (`SURV/YYYY/#####`). Owned by sunflow_core to avoid cross-addon dependency on `solar_management`. |
+| `solar_data.xml` | Defines IR sequences (`solar.project`, `solar.equipment.dispatch`), and product categories (`Solar Equipment`, `Solar Panels`, `Inverters`, `Battery Storage`, `BOS & Accessories`) used to categorize inventory products for solar components. |
 
 ## 4. Architectural Relationships
-`sequences.xml` is loaded automatically during addon installation (registered in `__manifest__.py`). It is consumed by `solar.survey.create()` (`models/site_survey.py`) to assign the `name` field.
+Data files in this directory are loaded by Odoo during `sunflow_core` installation, in the order specified under the `'data'` key in `__manifest__.py`. Sequences defined here are consumed by `solar.project.create()` and `solar.equipment.dispatch.create()` to generate human-readable reference codes. Product categories are used when registering solar products in the native Odoo inventory.
 
 ## 5. Documentation Rules
-- Any new XML data file added to `data/` must be declared in `__manifest__.py` and documented in the table above.
-- Sequence codes must remain owned by sunflow_core and must not collide with sequences from other addons.
+- Every new data file added to this directory must be declared in `__manifest__.py` (under `'data'`) and documented in the table above.
+- Data files must be declared AFTER `security/ir.model.access.csv` and BEFORE view files in `__manifest__.py`.
+- Changes to sequence codes or prefixes must be reflected in `learned.md` if they affect external integrations.
+

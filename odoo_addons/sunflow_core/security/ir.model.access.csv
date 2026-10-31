@@ -11,3 +11,11 @@ access_solar_installation_user,solar.installation.user,model_solar_installation,
 access_solar_installation_manager,solar.installation.manager,model_solar_installation,base.group_system,1,1,1,1
 access_solar_warranty_user,solar.warranty.user,model_solar_warranty,base.group_user,1,1,1,0
 access_solar_warranty_manager,solar.warranty.manager,model_solar_warranty,base.group_system,1,1,1,1
+access_solar_package_component_user,solar.package.component.user,model_solar_package_component,base.group_user,1,0,0,0
+access_solar_package_component_manager,solar.package.component.manager,model_solar_package_component,base.group_system,1,1,1,1
+access_solar_stock_requirement_user,solar.stock.requirement.user,model_solar_stock_requirement,base.group_user,1,1,1,0
+access_solar_stock_requirement_manager,solar.stock.requirement.manager,model_solar_stock_requirement,base.group_system,1,1,1,1
+access_solar_equipment_dispatch_user,solar.equipment.dispatch.user,model_solar_equipment_dispatch,base.group_user,1,1,0,0
+access_solar_equipment_dispatch_manager,solar.equipment.dispatch.manager,model_solar_equipment_dispatch,base.group_system,1,1,1,1
+access_solar_equipment_dispatch_line_user,solar.equipment.dispatch.line.user,model_solar_equipment_dispatch_line,base.group_user,1,1,0,0
+access_solar_equipment_dispatch_line_manager,solar.equipment.dispatch.line.manager,model_solar_equipment_dispatch_line,base.group_system,1,1,1,1

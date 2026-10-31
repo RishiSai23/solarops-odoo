@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'SunFlow Core — Solar Operations & Lifecycle ERP',
-    'version': '17.0.1.0.0',
+    'version': '17.0.2.0.0',
     'summary': 'Unified solar project lifecycle management from CRM to warranty and service.',
     'description': """
 Project SunFlow: Unified Solar Operations & Lifecycle Management Platform
 ==========================================================================
 - Centralized Project Lifecycle Tracking (solar.project)
 - Rooftop Site Feasibility & Survey Management (solar.survey)
-- Modular 1kW - 5kW Solar Packages (solar.package)
+- Modular 1kW - 5kW Solar Packages with Bill of Materials (solar.package, solar.package.component)
+- Stock Requirements & Shortage Management (solar.stock.requirement)
+- Serialized Equipment Dispatch & Traceability (solar.equipment.dispatch)
 - Field Installation Execution & Checklists (solar.installation)
 - Scanned Serial Number Warranty Registry (solar.warranty)
-- Native integration with CRM, Sales, Inventory, Invoicing, and Repairs
+- Native integration with CRM, Sales, Inventory, Purchase, Invoicing, and Repairs
     """,
     'author': 'SunFlow Team / GCET Hackathon',
     'website': 'https://github.com/RishiSai23/solarops-odoo',
@@ -22,15 +24,15 @@ Project SunFlow: Unified Solar Operations & Lifecycle Management Platform
         'crm',
         'sale_management',
         'stock',
+        'purchase',
         'account',
         'repair',
     ],
     'data': [
         'security/ir.model.access.csv',
-        'data/sequences.xml',
+        'data/solar_data.xml',
         'views/lifecycle_views.xml',
-        'views/survey_reject_wizard_view.xml',
-        'views/site_survey_views.xml',
+        'views/inventory_views.xml',
         'views/menu_views.xml',
     ],
     'demo': [],

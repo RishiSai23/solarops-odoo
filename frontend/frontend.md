@@ -20,6 +20,7 @@ The `frontend/` directory houses the Single-Page Application (SPA) client for Pr
 | `tailwind.config.js` | Tailwind design system configuration with custom solar amber and navy palettes. |
 | `tsconfig.json` | TypeScript compiler options enforcing strict typing, module resolution, and JSX support. |
 | `vite.config.ts` | Vite bundler configuration including React plugin and reverse proxy to the FastAPI backend. |
+| `README.md` | Frontend developer documentation with installation, execution, and build instructions. |
 
 ## 4. Architectural Relationships
 The frontend communicates over HTTP with `backend/` via `/api/v1` routes, displaying live lifecycle data sourced from Odoo ERP.

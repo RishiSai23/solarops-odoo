@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================================================================= -->
+    <!-- SOLAR CUSTOMER FORM VIEW EXTENSION                                -->
+    <!-- ================================================================= -->
+    <record id="view_partner_form_solar_inherit" model="ir.ui.view">
+        <field name="name">res.partner.form.solar.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="priority">25</field>
+        <field name="arch" type="xml">
+
+            <!-- Stat Button in Button Box -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_solar_leads"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-bolt"
+                        invisible="solar_lead_count == 0">
+                    <field name="solar_lead_count" widget="statinfo" string="Solar Inquiries"/>
+                </button>
+            </xpath>
+
+            <!-- Dedicated Solar Information Tab in Notebook -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Solar Installation" name="solar_customer_info">
+                    <group>
+                        <group string="Solar Customer Status">
+                            <field name="is_solar_customer"/>
+                        </group>
+                    </group>
+                    <field name="solar_lead_ids" readonly="1">
+                        <tree string="Solar Inquiries &amp; Projects">
+                            <field name="solar_lead_ref"/>
+                            <field name="name" string="Inquiry Title"/>
+                            <field name="solar_system_type"/>
+                            <field name="expected_capacity_kw" string="Capacity (kW)"/>
+                            <field name="monthly_bill_amount" widget="monetary"/>
+                            <field name="solar_qualification_status" widget="badge"
+                                   decoration-success="solar_qualification_status == 'qualified'"
+                                   decoration-warning="solar_qualification_status == 'needs_info'"
+                                   decoration-danger="solar_qualification_status == 'not_suitable'"
+                                   decoration-muted="solar_qualification_status == 'not_evaluated'"/>
+                            <field name="is_survey_ready" widget="boolean"/>
+                            <field name="stage_id" widget="badge"/>
+                            <field name="company_currency" column_invisible="1"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- ================================================================= -->
+    <!-- SOLAR CUSTOMER SEARCH VIEW EXTENSION                              -->
+    <!-- ================================================================= -->
+    <record id="view_res_partner_filter_solar" model="ir.ui.view">
+        <field name="name">res.partner.solar.search</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='type_person']" position="before">
+                <filter string="Solar Customers" name="filter_solar_customer"
+                        domain="[('is_solar_customer', '=', True)]"/>
+                <separator/>
+            </xpath>
+            <xpath expr="//group[@name='group_by']" position="inside">
+                <filter string="Solar Customer" name="group_by_solar_customer"
+                        context="{'group_by': 'is_solar_customer'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ================================================================= -->
+    <!-- SOLAR CUSTOMER WINDOW ACTION                                      -->
+    <!-- ================================================================= -->
+    <record id="action_solar_customers" model="ir.actions.act_window">
+        <field name="name">Solar Customers</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="search_view_id" ref="view_res_partner_filter_solar"/>
+        <field name="domain">[('is_solar_customer', '=', True)]</field>
+        <field name="context">{
+            'default_is_solar_customer': True,
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No Solar Customers registered yet.
+            </p>
+            <p>
+                Qualified solar leads that have been converted will appear here automatically
+                with their complete inquiry history and rooftop project details.
+            </p>
+        </field>
+    </record>
+
+</odoo>
