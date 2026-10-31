@@ -151,6 +151,9 @@ activemq-data/
 
 # Environments
 .env
+.env.*
+!.env.example
+*.env
 .envrc
 .venv
 env/
@@ -158,6 +161,16 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+
+# Odoo runtime, logs, temporary database dumps, and local data
+odoo.log
+odoo-server.log
+*.dump
+dump.sql
+*.sql.gz
+*.pg_dump
+filestore/
+sessions/
 
 # Spyder project settings
 .spyderproject
