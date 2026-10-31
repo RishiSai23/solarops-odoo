@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Top-level Application Root Menu for SolarOps -->
+    <menuitem id="menu_solar_root"
+              name="SolarOps"
+              groups="group_solar_user,group_solar_manager"
+              sequence="10"/>
+</odoo>

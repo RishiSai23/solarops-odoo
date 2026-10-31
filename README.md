@@ -1,86 +1,181 @@
-# Project SunFlow — Unified Solar Operations & Lifecycle ERP
+# SolarOps – Solar Installation Management System
 
-> **Odoo × GCET Hackathon Finale**  
-> *Target Business Scenario: SunPower Solutions (Residential & Commercial Solar Operations)*
+**A Native Odoo 17 ERP Solution for End-to-End Solar Operations**
 
-[![Documentation Validation](https://img.shields.io/badge/Docs-100%25%20Validated-brightgreen.svg)](#documentation-system)
-[![Architecture](https://img.shields.io/badge/Architecture-Dual--Engine%20Odoo%20%2B%20FastAPI-blue.svg)](#system-architecture)
-[![Tech Stack](https://img.shields.io/badge/Frontend-React%2018%20%2B%20Vite%20%2B%20Tailwind-purple.svg)](#tech-stack)
+SolarOps is a modular solar installation management system built natively on Odoo 17. It is designed to manage the complete lifecycle of solar installation operations, from customer enquiries and site surveys to quotations, inventory, installation, warranties, and after-sales service.
 
----
+## Project Overview
 
-## ☀️ The Core Thesis
-> **ONE CUSTOMER. ONE PROJECT RECORD. ONE CONNECTED OPERATIONAL LIFECYCLE.**
+Solar companies often manage customer acquisition, technical surveys, inventory, installation teams, payments, and maintenance through disconnected systems.
 
-Project SunFlow bridges the critical divide between customer acquisition, engineering feasibility, field execution, and post-installation warranty management. Rather than operating in isolated silos, every team works on a unified, authoritative project lifecycle anchored in **Odoo ERP**.
+SolarOps brings these operations together through a unified Odoo-based platform, providing a centralized source of truth for every customer and solar project.
 
----
+**Core Principle: One Customer. One Project Record. One Connected Operational Lifecycle.**
 
-## 🚀 The 19-Stage Solar Operations Lifecycle
-SunFlow models and automates the complete operational journey:
-1. **Customer Enquiry & CRM**: Lead intake & energy needs.
-2. **Lead Qualification**: Bill verification & solar feasibility.
-3. **Site Survey**: Digital rooftop assessment (tilt, azimuth, shading, sanctioned load).
-4. **Solar Package Configuration**: 1 kW to 5 kW On-Grid/Off-Grid/Hybrid selection.
-5. **Automated BOM Generation**: Dynamic calculation of panels, inverters, cables, and BOS.
-6. **Quotation & Sales Order**: Milestone-based commercial proposals.
-7. **Advance Payment Tracking**: Automated milestone invoice & payment reconciliation.
-8. **Inventory Reservation**: Warehouse allocation of certified equipment.
-9. **Serial Number Traceability**: Barcode/QR scanning for high-value components into `stock.lot`.
-10. **Dispatch Management**: Logistics tracking & delivery verification.
-11. **Technician Scheduling**: Allocation of certified field installation crews.
-12. **Installation Execution**: Step-by-step checklist with geo-stamped photos & electrical readings.
-13. **Digital Customer Acceptance**: Customer sign-off & electronic handover certificate.
-14. **Automatic Warranty Registration**: Serial-linked multi-year equipment warranties.
-15. **After-Sales Service & Ticketing**: Customer support portal & SLA dispatch.
-16. **Warranty Validation & RMA**: Serial validation preventing warranty fraud.
-17. **Project Profitability**: Real-time margin analytics (Revenue vs Materials, Labor, Logistics).
-18. **Subsidy Tracking**: Government subsidy application tracking (e.g., PM Surya Ghar).
-19. **Management Analytics**: Executive KPI dashboards & operational throughput metrics.
+## Key Business Workflows
 
----
+The system is designed to support the following workflows:
 
-## 🏗️ System Architecture
+1. **Lead Management** – Capture and qualify customer enquiries.
+2. **Site Survey Management** – Record rooftop measurements, orientation, shading, and technical feasibility.
+3. **Solar Package Configuration** – Configure On-Grid and Off-Grid solar packages.
+4. **Bill of Materials Generation** – Determine required panels, inverters, cables, mounting structures, and accessories.
+5. **Quotation and Sales** – Generate quotations and manage sales orders.
+6. **Payment Tracking** – Track advance and remaining payments.
+7. **Inventory Management** – Coordinate equipment availability and warehouse operations.
+8. **Serial Number Traceability** – Track serialized solar equipment throughout its lifecycle.
+9. **Installation Management** – Coordinate technicians, installation schedules, and completion records.
+10. **Warranty Management** – Track equipment warranties and coverage periods.
+11. **After-Sales Service** – Manage complaints, repairs, and warranty claims.
+12. **Project Costing and Reporting** – Monitor project profitability, expenses, technician hours, and operational performance.
 
-- **Authoritative ERP Core**: Odoo 17 / 18 + PostgreSQL (`odoo_addons/sunflow_core`)
-- **API & Orchestration Gateway**: Python 3.10+ FastAPI (`backend/`)
-- **Modern Executive & Field Client**: React 18 + Vite + TypeScript + Tailwind CSS (`frontend/`)
-- **Deployment**: Docker Compose multi-service stack (`docker/`)
+## Technology Stack
 
----
+| Component | Technology |
+|---|---|
+| ERP Platform | Odoo 17 Community Edition |
+| Backend | Python |
+| Database | PostgreSQL 15 |
+| ORM | Odoo ORM |
+| User Interface | Native Odoo Views and Web Client |
+| Reporting | Odoo QWeb Reports |
+| Infrastructure | Docker and Docker Compose |
+| Version Control | Git and GitHub |
 
-## 📖 Mandatory Agent & Developer Navigation
-Before modifying code in this repository, please review:
-- [`AGENTS.md`](./AGENTS.md) — Comprehensive guide for AI coding agents.
-- [`learned.md`](./learned.md) — Architectural and business domain knowledge repository.
-- [`progress.md`](./progress.md) — Single source of truth for implementation progress.
-- [`ENGINEERING_PROTOCOL.md`](./ENGINEERING_PROTOCOL.md) — Code quality & commit guidelines.
-- **Directory Markdown Files**: Every directory contains `<directory_name>/<directory_name>.md`.
+## Repository Structure
 
----
-
-## 🛠️ Quick Start
-
-### Validate Documentation Integrity
-```bash
-python scripts/validate_docs.py
+```text
+solarops-odoo/
+│
+├── backend/
+│   ├── addons/
+│   │   └── solar_management/
+│   │       ├── __init__.py
+│   │       ├── __manifest__.py
+│   │       ├── models/
+│   │       ├── security/
+│   │       ├── views/
+│   │       └── data/
+│   │
+│   ├── config/
+│   ├── docs/
+│   │   ├── ARCHITECTURE.md
+│   │   ├── PROJECT_CONTEXT.md
+│   │   └── DEVELOPMENT_TRACKER.md
+│   │
+│   ├── compose.yaml
+│   ├── .env.example
+│   └── README.md
+│
+├── frontend/
+│   └── README.md
+│
+├── .gitignore
+└── README.md
 ```
 
-### Run Backend API Gateway
+The primary application is the native Odoo addon located at:
+
+`backend/addons/solar_management/`
+
+The `frontend/` directory is reserved for potential future extensions. The core application uses Odoo's native interface rather than a separate frontend application.
+
+## Architecture
+
+SolarOps follows a modular monolithic architecture using Odoo's native framework.
+
+- **Business Logic:** Python models and methods using the Odoo ORM.
+- **Database:** PostgreSQL.
+- **Security:** Odoo access control lists, security groups, and record rules.
+- **User Interface:** Native Odoo XML views and menus.
+- **Automation:** Odoo workflows, scheduled actions, and model methods.
+- **Infrastructure:** Dockerized Odoo and PostgreSQL services.
+
+Where appropriate, the system will integrate with Odoo's native applications, including CRM, Sales, Inventory, Purchase, Accounting, Project, Field Service, and Helpdesk.
+
+## Development Setup
+
+### Prerequisites
+
+- Docker Desktop
+- Git
+- A modern web browser
+
+### 1. Clone the repository
+
 ```bash
-cd backend
-pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
+git clone https://github.com/RishiSai23/solarops-odoo.git
+cd solarops-odoo
 ```
 
-### Run Frontend Client
-```bash
-cd frontend
-npm install
-npm run dev
+### 2. Configure environment variables
+
+Copy the example environment file:
+
+```powershell
+Copy-Item backend/.env.example backend/.env
 ```
 
-### Run Full Stack with Docker
-```bash
-docker compose -f docker/docker-compose.yml up -d
+Update the environment values in `backend/.env` if necessary.
+
+### 3. Start the application
+
+```powershell
+docker compose -f backend/compose.yaml --env-file backend/.env up -d
 ```
+
+### 4. Access Odoo
+
+Open:
+
+`http://localhost:8069`
+
+Create or select your development database and install the SolarOps addon through the Odoo Apps interface.
+
+### 5. Stop the application
+
+```powershell
+docker compose -f backend/compose.yaml --env-file backend/.env down
+```
+
+To preserve development database data, do not add the `-v` flag.
+
+## Security and Configuration
+
+- Environment-specific credentials are stored in the ignored `backend/.env` file.
+- `backend/.env.example` documents the required configuration variables.
+- Database credentials and runtime data must not be committed to Git.
+- Odoo's native security mechanisms are used for access control.
+
+## Development Roadmap
+
+The implementation is divided into independently reviewable modules:
+
+1. Foundation and Environment Setup
+2. Lead Management
+3. Site Survey Management
+4. Solar Package and BOM Configuration
+5. Quotation and Sales Order Management
+6. Payment Management
+7. Inventory and Serial Number Tracking
+8. Installation Management
+9. Warranty Management
+10. After-Sales Service Management
+11. Project Costing and Profitability
+12. Subsidy and Documentation Management
+13. Dashboards and Reporting
+14. Integration and End-to-End Validation
+
+Each module will be designed, implemented, manually verified, and documented before proceeding to the next.
+
+## Project Context
+
+**Project:** SolarOps  
+**Event:** Odoo × GCET Hackathon 2026  
+**Platform:** Odoo 17 Community Edition  
+**Database:** PostgreSQL 15  
+**Repository:** https://github.com/RishiSai23/solarops-odoo
+
+---
+
+*SolarOps – Connecting every stage of the solar installation lifecycle through one unified ERP platform.*
