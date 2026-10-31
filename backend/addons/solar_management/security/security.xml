@@ -11,14 +11,17 @@
     <record id="group_solar_user" model="res.groups">
         <field name="name">SolarOps User</field>
         <field name="category_id" ref="module_category_solar_management"/>
+        <field name="implied_ids" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+        <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
         <field name="comment">Standard operational role with access to view and execute assigned solar operations (surveys, leads, installations, service tickets).</field>
     </record>
 
-    <!-- SolarOps Manager Group (implies User group) -->
+    <!-- SolarOps Manager Group (implies User group and CRM Manager) -->
     <record id="group_solar_manager" model="res.groups">
         <field name="name">SolarOps Manager</field>
         <field name="category_id" ref="module_category_solar_management"/>
-        <field name="implied_ids" eval="[(4, ref('group_solar_user'))]"/>
+        <field name="implied_ids" eval="[(4, ref('group_solar_user')), (4, ref('sales_team.group_sale_manager'))]"/>
+        <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
         <field name="comment">Administrative manager role with full oversight, approvals, configurations, and reporting access across the SolarOps system.</field>
     </record>
 </odoo>

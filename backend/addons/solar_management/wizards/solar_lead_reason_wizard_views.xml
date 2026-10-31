@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Solar Lead Reason Wizard View -->
+    <record id="view_solar_lead_reason_wizard_form" model="ir.ui.view">
+        <field name="name">solar.lead.reason.wizard.form</field>
+        <field name="model">solar.lead.reason.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Solar Qualification Notes">
+                <sheet>
+                    <group>
+                        <field name="lead_id" invisible="1"/>
+                        <field name="action_type" invisible="1"/>
+                        <field name="reason" placeholder="Enter specific grounds for rejection, structural constraints, or items required from customer..."/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_confirm" string="Confirm" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

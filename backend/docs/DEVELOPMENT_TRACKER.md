@@ -9,7 +9,7 @@ This document outlines the full 14-module delivery lifecycle for SolarOps.
 | Module | Title | Scope Summary | Dependencies | Status |
 | :---: | :--- | :--- | :--- | :---: |
 | **01** | **Project Foundation & Environment Setup** | Repository organization (`frontend/`, `backend/`), Docker Compose (`odoo:17`, `postgres:15`), base addon `solar_management`, security hierarchy, sequences, base menu, architecture docs. | None | **Implemented (Target)** |
-| **02** | **Lead & Enquiry Management** | Prospective customer lead capture, energy consumption profiling, feasibility triage, stage pipeline, conversion to survey. | Module 01 | *Planned* |
+| **02** | **Customer & Lead Management** | Native `crm.lead` and `res.partner` extension, solar intake channels (WhatsApp/Phone/Web), technical pre-qualification, duplicate-safe customer conversion, survey readiness dispatch, full test suite. | Module 01 | **Implemented (Target)** |
 | **03** | **Site Survey Management** | On-site technical roof evaluation, shading analysis, orientation/tilt data, electrical infrastructure audit, survey reports. | Module 02 | *Planned* |
 | **04** | **Solar Packages & Bill of Materials** | Pre-configured solar system packages (kW sizes), component BOMs (panels, inverters, structures, balance of system), dynamic sizing. | Module 01, 03 | *Planned* |
 | **05** | **Quotations & Sales Orders** | Solar customer proposals, technical/commercial quotation generation, system yield projections, ROI/payback periods, contract confirmation. | Module 03, 04 | *Planned* |
@@ -39,10 +39,20 @@ This document outlines the full 14-module delivery lifecycle for SolarOps.
   - Root application menu structure and reusable `ir.sequence` auto-numbering records.
   - Technical architecture, project context, and development tracker documentation.
 
-### Module 02: Lead and Enquiry Management
-- **Status**: *Planned*
-- **Scope**: Lead intake, customer electricity tariff profiling, roof availability pre-check, lead scoring, and survey request handoff.
-- **Dependencies**: Module 01.
+### Module 02: Customer and Lead Management
+- **Status**: **Implemented (Target)** *(Note: Complete implementation in place; manual verification and testing in Odoo 17 pending by developer)*
+- **Scope**:
+  - Native `crm.lead` extension with reference sequence (`LEAD/YYYY/XXXXX`), multi-channel lead intake (`solar_lead_source`: WhatsApp, Phone, Website, Manual, Other).
+  - Energy & consumption profiling (`monthly_bill_amount`, `avg_monthly_consumption_kwh`).
+  - Rooftop feasibility & space pre-checks (`roof_area_sqft`, `roof_ownership`, `roof_suitability`, `grid_connectivity`, `solar_system_type`, `expected_capacity_kw`).
+  - Business qualification workflow (`action_qualify_lead`, `action_needs_more_info`, `action_mark_not_suitable`, `action_reset_qualification`).
+  - Rejection / missing data reason capture via modal wizard (`solar.lead.reason.wizard`).
+  - Site survey readiness gating (`action_mark_survey_ready`, `is_survey_ready`).
+  - Duplicate-preventative customer conversion (`action_solar_convert_to_customer`).
+  - Native `res.partner` extension with `is_solar_customer`, historical `solar_lead_ids`, count, and smart-button navigation.
+  - Custom list, search, inherited form views, and dedicated SolarOps Sales submenus.
+  - 11 comprehensive automated test cases (`tests/test_solar_lead.py`).
+- **Dependencies**: Module 01, Odoo native `crm`.
 
 ### Module 03: Site Survey Management
 - **Status**: *Planned*
