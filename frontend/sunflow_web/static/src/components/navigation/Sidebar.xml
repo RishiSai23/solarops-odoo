@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="sunflow_web.Sidebar">
+        <aside class="o_sunflow_sidebar">
+            <div class="o_sunflow_sidebar_header">SunFlow Solar</div>
+            <nav class="o_sunflow_sidebar_nav">
+                <a class="o_sunflow_nav_item active">Overview</a>
+                <a class="o_sunflow_nav_item">Projects</a>
+                <a class="o_sunflow_nav_item">Surveys</a>
+                <a class="o_sunflow_nav_item">Installations</a>
+                <a class="o_sunflow_nav_item">Packages</a>
+                <a class="o_sunflow_nav_item">Reports</a>
+            </nav>
+        </aside>
+    </t>
+</templates>

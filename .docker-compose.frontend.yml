@@ -1,0 +1,4 @@
+﻿services:
+  odoo:
+    volumes:
+      - ../frontend/sunflow_web:/mnt/extra-addons/sunflow_web

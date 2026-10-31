@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="sunflow_web.KpiCard">
+        <div class="o_sunflow_kpi_card">
+            <span class="o_sunflow_kpi_label" t-esc="props.label"/>
+            <span class="o_sunflow_kpi_value" t-esc="props.value"/>
+            <span class="o_sunflow_kpi_delta" t-if="props.delta" t-esc="props.delta"/>
+        </div>
+    </t>
+</templates>
