@@ -21,7 +21,7 @@
     <menuitem id="menu_sunflow_surveys"
               name="Site Surveys"
               parent="menu_sunflow_operations"
-              action="action_solar_survey"
+              action="action_solar_site_survey"
               sequence="20"/>
 
     <!-- ── Inventory ─────────────────────────────────────────────────── -->
