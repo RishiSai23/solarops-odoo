@@ -237,7 +237,7 @@
         <field name="name">Stock Shortages</field>
         <field name="res_model">solar.stock.requirement</field>
         <field name="view_mode">tree,form</field>
-        <field name="domain">[('status', 'in', ['shortage', 'partial'])]</field>
+        <field name="domain">[('status', 'in', ['available', 'shortage', 'partial'])]</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 No stock shortages — all requirements are met!
