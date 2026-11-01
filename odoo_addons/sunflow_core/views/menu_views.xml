@@ -2,7 +2,7 @@
 <odoo>
     <!-- Top Level Menu -->
     <menuitem id="menu_sunflow_root"
-              name="SunFlow Solar"
+              name="SolarOps"
               sequence="10"
               web_icon="sunflow_core,static/description/icon.png"/>
 

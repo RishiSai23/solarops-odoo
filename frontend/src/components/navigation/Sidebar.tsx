@@ -22,7 +22,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
         <div className="px-5 py-4 border-b border-white/10 flex items-center gap-2">
           <Sun className="h-6 w-6 text-[#16865B]" />
           <div>
-            <div className="font-semibold">SunFlow Solar</div>
+            <div className="font-semibold">SolarOps</div>
             <div className="text-xs text-slate-300">SunPower Solutions</div>
           </div>
         </div>

@@ -2,7 +2,7 @@
 <templates xml:space="preserve">
     <t t-name="sunflow_web.Sidebar">
         <aside class="o_sunflow_sidebar">
-            <div class="o_sunflow_sidebar_header">SunFlow Solar</div>
+            <div class="o_sunflow_sidebar_header">SolarOps</div>
             <nav class="o_sunflow_sidebar_nav">
                 <a class="o_sunflow_nav_item active">Overview</a>
                 <a class="o_sunflow_nav_item">Projects</a>
