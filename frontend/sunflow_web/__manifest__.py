@@ -2,7 +2,7 @@
 {
     'name': 'SunFlow Web - Native Frontend',
     'version': '17.0.1.0.0',
-    'summary': 'Native Odoo 17 OWL frontend foundation for SunFlow Solar Operations',
+    'summary': 'Native Odoo 17 OWL frontend foundation for SolarOps Operations',
     'description': """
 SunFlow Web Frontend
 ====================

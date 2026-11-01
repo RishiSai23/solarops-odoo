@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': 'SunFlow Core — Solar Operations & Lifecycle ERP',
+    'name': 'SolarOps Core — Solar Operations & Lifecycle ERP',
     'version': '17.0.2.0.0',
     'summary': 'Unified solar project lifecycle management from CRM to warranty and service.',
     'description': """

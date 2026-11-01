@@ -10,7 +10,9 @@ Currently, `scripts/` has no subdirectories. All foundation-level utility script
 
 | File | Responsibility |
 |---|---|
+| `generate_survey_test_data.py` | Standalone generator for site survey test fixtures and rooftop data models. |
 | `populate_all_columns_stock_requirements.py` | Realistic data harmonizer across all columns of `solar.stock.requirement`. Assigns solar-engineering-based required quantities, sets serialization flags, generates realistic on-hand batch levels, allocates reserved quantities for installations, populates incoming purchase orders, and balances status distributions. |
+| `rename_to_solarops.py` | Utility script renaming 'SunFlow Solar' branding occurrences to 'SolarOps' across module views, manifests, and documentation. |
 | `replenish_demo_stock.py` | Warehouse inventory replenishment and stock requirement recomputation script. Updates WH/Stock quants for demo solar panels and inverters, creates incoming purchase orders, and triggers `action_check_stock()` across all stock requirements to populate realistic On Hand, Incoming, Available, and Shortage figures. |
 | `seed_solarops_tables.py` | Demo data seeder for Odoo 17 generating up to 300 packages, components, demo customers, projects, stock requirements, and draft equipment dispatches. |
 | `set_all_stocks_available.py` | Stock availability maximizer script that updates all 310 `solar.stock.requirement` records to 'available' status with ample on-hand quantities, 0.00 shortage, positive free available stock, and adjusts `action_solar_stock_shortages` domain. |
