@@ -32,7 +32,8 @@ services:
     volumes:
       - solarops_odoo_data:/var/lib/odoo
       - ./addons:/mnt/extra-addons
-    command: ["odoo", "--addons-path=/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons"]
+      - ../odoo_addons:/mnt/sunflow_addons
+    command: ["odoo", "--addons-path=/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons,/mnt/sunflow_addons"]
     networks:
       - solarops_network
 
